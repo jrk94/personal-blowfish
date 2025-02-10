@@ -36,8 +36,8 @@ layoutBackgroundBlur = false
 
 [article]
 showDate = true
-showViews = false
-showLikes = false
+showViews = true
+showLikes = true
 showDateOnlyInArticle = true
 showDateUpdated = false
 showAuthor = false
@@ -47,7 +47,7 @@ layoutBackgroundBlur = true
 showBreadcrumbs = true
 showDraftLabel = true
 showEdit = true
-editURL = "https://github.com/nunocoracao/n9o.xyz/tree/main/content"
+editURL = "https://github.com/jrk94/personal-blowfish/tree/main/content"
 editAppendPath = true
 seriesOpened = true
 showHeadingAnchors = true
@@ -61,7 +61,7 @@ showTaxonomies = true
 showAuthorsBadges = true
 showWordCount = false
 showSummary = true
-sharingLinks = [ "linkedin", "twitter", "whatsapp", "telegram", "pinterest", "reddit", "facebook", "email"]
+sharingLinks = [ "linkedin", "email"]
 
 [list]
 showHero = false
