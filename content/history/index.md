@@ -38,14 +38,14 @@ layoutBackgroundHeaderSpace: false
       <td><img class="customEntitityLogo" alt="Critical Manufacturing" src="img/critical_manufacturing_logo.jpg" /></td>
       <td><a href="https://www.criticalmanufacturing.com/">Critical Manufacturing</a></td>
       <td>Architecture & Advocacy - <br /> Automation & Connectivity</td>
-      <td>02/2024 - Present</td>
+      <td>Present - 02/2024</td>
       <td>Maia, Porto<br />Portugal</td>
     </tr>
     <tr>
       <td><img class="customEntitityLogo" alt="Let's Get Checked" src="img/letsgetchecked_logo.jpg" /></td>
       <td><a href="https://www.letsgetchecked.com/">Let's Get Checked</a></td>
       <td>Backend Software Engineer</td>
-      <td>03/2023 - 02/2024</td>
+      <td>02/2024 - 03/2023</td>
       <td>Remote</td>
     </tr>
     <tr>
@@ -54,17 +54,17 @@ layoutBackgroundHeaderSpace: false
     </tr>
       <tr>
           <td>Senior Software Engineer</td>
-          <td>02/2021 - 06/2022</td>
+          <td>06/2022 - 02/2021</td>
           <td>Porto, PT</td>
       </tr>
       <tr>
           <td>Software Engineer</td>
-          <td>09/2019 - 02/2021</td>
+          <td>02/2021 - 09/2019</td>
           <td>Porto, PT</td>
       </tr>
       <tr>
           <td>Junior Software Engineer</td>
-          <td>09/2017 - 08/2018</td>
+          <td>08/2018 - 09/2017</td>
           <td>Porto, PT</td>
       </tr>
   </tbody>
@@ -92,13 +92,13 @@ layoutBackgroundHeaderSpace: false
             <td><img class="customEntitityLogo" src="img/feup-logo.jpg"/></td>
             <td><a href="https://www.up.pt/feup/pt/" target="_blank">Faculdade de Engenharia da Universidade do Porto</a></td>
             <td>Mestrado integrado em Engenharia Electrotécnica e Computadores</td>
-            <td>2012-2017</td>
+            <td>2017 - 2012</td>
         </tr>
         <tr>
             <td><img class="customEntitityLogo" src="img/unipisa_logo.jpg"/></td>
             <td><a href="https://www.unipi.it/" target="_blank">Università Di Pisa</a></td>
             <td>Erasmus</td>
-            <td>2015-2016</td>
+            <td>2016 - 2015</td>
         </tr>
     </tbody>
 </table>
