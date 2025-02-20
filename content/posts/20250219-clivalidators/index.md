@@ -1,14 +1,14 @@
 ---
-title: "CM CLI - Validators"
+title: "CM CLI - Validators - v5.2.0"
 description: "Preemptive Strike."
 summary: "Preemptive Strike."
 categories: ["CM"]
 tags: [ "cm-cli"]
 #externalUrl: ""
-date: 2024-11-26
+date: 2025-02-19
 draft: false
 authors:
-  - roque
+  - Roque
 ---
 
 For this post I want to discuss what for me is one of the least understood features of [CM CLI](https://github.com/criticalmanufacturing/cli/), the build validators.

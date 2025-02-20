@@ -8,7 +8,7 @@ tags: [ "pth"]
 date: 2024-11-26
 draft: false
 authors:
-  - roque
+  - Roque
 ---
 
 ## Reflecting on Porto Tech Hub 2024: A Different Experience  

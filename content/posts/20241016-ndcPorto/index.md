@@ -8,7 +8,7 @@ tags: [ "ndc"]
 date: 2024-10-16
 draft: false
 authors:
-  - roque
+  - Roque
 ---
 
 ## What happened at NDC Porto 2024

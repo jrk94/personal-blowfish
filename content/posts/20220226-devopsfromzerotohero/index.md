@@ -8,7 +8,7 @@ tags: [ "myhistory", "devops", "cm-cli"]
 date: 2022-02-26
 draft: false
 authors:
-  - roque
+  - Roque
 ---
 
 In the beggining there was a powershell script📜...

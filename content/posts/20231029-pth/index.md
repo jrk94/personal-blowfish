@@ -8,7 +8,7 @@ tags: [ "pth"]
 date: 2023-10-29
 draft: false
 authors:
-  - roque
+  - Roque
 ---
 
 ## My Experience at Porto Tech Hub 2023  

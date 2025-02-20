@@ -8,7 +8,7 @@ tags: ["Trip", "productronica"]
 date: 2021-11-18
 draft: false
 authors:
-  - roque
+  - Roque
 ---
 
 ## Connecting the Future: Critical Manufacturing at Productronica 2021
