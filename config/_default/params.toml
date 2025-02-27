@@ -7,7 +7,7 @@ enableCodeCopy = true
 
 mainSections = ["posts"]
 
-disableImageOptimization = false
+disableImageOptimization = true
 disableTextInHeader = true
 
 highlightCurrentMenuArea = true
@@ -28,11 +28,11 @@ showScrollToTop = true
 layout = "profile"
 showRecent = true
 showRecentItems = 12
-showMoreLink = false
+showMoreLink = true
 showMoreLinkDest = "/posts/"
 cardView = true
 cardViewScreenWidth = false
-layoutBackgroundBlur = false
+layoutBackgroundBlur = true
 
 [article]
 showDate = true
