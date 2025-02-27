@@ -9,6 +9,6 @@ displayName = "EN"
 isoCode = "en"
 rtl = false
 dateFormat = "2 January 2006"
-author = { name = "João Roque", email = "joao.roque.94@gmail.com", image = "img/myself.jpg", imageQuality = 96, headline = "Dream the Future, Build the Present", bio = "I am an Advocate @CriticalManufacturing for Automation and Connectivity.", links = [ { github = "https://github.com/jrk94" }, { linkedin = "https://www.linkedin.com/in/j-roque" }, { email = "mailto:joao.roque.94@gmail.com" }, { youtube = "https://www.youtube.com/@j-roque94" } ] }
+author = { name = "João Roque", email = "joao.roque.94@gmail.com", image = "img/myself.jpg", imageQuality = 100, headline = "Dream the Future, Build the Present", bio = "I am an Advocate @CriticalManufacturing for Automation and Connectivity.", links = [ { github = "https://github.com/jrk94" }, { linkedin = "https://www.linkedin.com/in/j-roque" }, { email = "mailto:joao.roque.94@gmail.com" }, { youtube = "https://www.youtube.com/@j-roque94" } ] }
 logo = "img/icon.png"
 secondaryLogo = "img/icon.png"
