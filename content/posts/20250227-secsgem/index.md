@@ -131,4 +131,5 @@ Notice how this is a very minor change, we replace the switch with a call to the
 
 We could even have states that are machine specific and states that impact a whole set of resource types, you can now play around with this idea to best suite your integration.
 
-Take not how a simple tweak in architecture can change from a solution that is very narrow and only covers one integration, to an integration that can leverage the MES to be cross integration.
+Take note of how a simple tweak in architecture can transform a solution from being very narrow and covering only one integration to one that leverages the MES for cross-integration.
+ 
