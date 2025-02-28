@@ -19,7 +19,7 @@ One of the most common protocols for the semi-conductor area is Secs-Gem. Secs-G
 
 One simple example that showcases how `Connect IoT` handles secs-gem is a change of state model of a machine (i.e `MES Resource`). 
 
-It's common that a machine has a state mode different from the standard SEMI E-10. Sometimes the machine offers more states or most often than not, the machine is only able to partially achieve the SEMI E-10. The MES is able to work with the machine integration to offer a fuller view of what is happening in the machine.
+It's common that a machine has a state model different from the standard SEMI E-10. Sometimes the machine offers more states or most often than not, the machine is only able to partially achieve the SEMI E-10. The MES is able to work with the machine integration to offer a fuller view of what is happening in the machine.
 
 This tutorial is an example where we have a secs-gem machine that as a mapping of integers from 1-6 to SEMI E10 States. The integration must connect to the machine, listen to an event and correctly change the states of the machine. CM's tutorial on this is very extensive, I will give a quick recap.
 
@@ -75,7 +75,7 @@ An event:
 
 ![Secs Gem Automation Driver Definition Event](img/secsgem-automationdriverdefinition-event.png)
 
-And the link between properties and events, for secs-gem this is very important as property are grouped in reports and reports are associated to events:
+And the link between properties and events, for secs-gem this is very important as properties are grouped in reports and reports are associated to events:
 
 ![Secs Gem Automation Driver Definition Event Property](img/secsgem-automationdriverdefinition-eventproperty.png)
 
