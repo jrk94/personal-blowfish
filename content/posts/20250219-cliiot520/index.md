@@ -273,4 +273,8 @@ Notice that right away we see our package `My Tasks` and we can select and it to
 
 Version **5.2.0** brings a whole new way of creating customization for `Connect IoT`. This was a very simple of example of how with a simple set of commands you can generate all you need to start happy coding 🧑‍💻. Now in an even more intuitive and integrated way.
 
+{{< alert "github" >}}
+**Info:** You can find the project used for this demo at [CLI-IoT520](https://github.com/jrk94/cm-demo-repos/tree/main/CLI-IoT520)
+{{< /alert >}}
+
 Thank you for reading !!!
