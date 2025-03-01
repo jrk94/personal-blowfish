@@ -133,3 +133,8 @@ We could even have states that are machine specific and states that impact a who
 
 Take note of how a simple tweak in architecture can transform a solution from being very narrow and covering only one integration to one that leverages the MES for cross-integration.
  
+{{< alert "github" >}}
+**Info:** You can find the project used for this demo at [SecsGem-Dynamic](https://github.com/jrk94/cm-demo-repos/tree/main/SecsGem-Dynamic)
+{{< /alert >}}
+
+Thank you for reading !!!

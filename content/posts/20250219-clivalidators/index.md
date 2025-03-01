@@ -324,3 +324,9 @@ Why should the user care, if all of this is happening behind the scenes? Mostly 
 Please contribute with your ideas of things you would like to -> [Issues](https://github.com/criticalmanufacturing/cli/issues)
 
 And hopefully you enjoyed learning a bit about we can do with our tooling
+
+{{< alert "github" >}}
+**Info:** You can find the project used for this demo at [CLI-Validators](https://github.com/jrk94/cm-demo-repos/tree/main/CLI-Validators)
+{{< /alert >}}
+
+Thank you for reading !!!
