@@ -20,13 +20,20 @@ For this use case I chose to use `MQTT` and the `REST Server` driver.
 
 `MQTT` is very common for simple sensors that publish information to a topic. We will create virtual humidity and temperature sensors and we will post that information to IoT Dataplatform via MES. 
 
-I also wanted to use this opportunity to showcase how `Connect IoT` can orchestrate multiple drivers, in this scenario they are not as intertwined as for example a docking station and a main machine, but still it shows how we can leverage the MES for a functional grouping. Therefore, we will also use the `REST Server` driver. It will be used to  receive calls from a devide measuring the air quality of the clean room.
+I also wanted to use this opportunity to showcase how `Connect IoT` can orchestrate multiple drivers, in this scenario they are not as intertwined as for example a docking station and a main machine, but still it shows how we can leverage the MES for a functional grouping. Therefore, we will also use the `REST Server` driver. It will be used to receive calls from a devide measuring the air quality of the clean room.
+
+We will have three types of sensors:
+- temperature
+- humidity
+- air quality - with ppm10 ppm2.5 co2 and voc
+
+In this use case we will use IoT Data Platform as our platform to ingest and manipulate big data.
 
 ---
 
 ## MES Model Overview
 
-In this example we will map the clean room as area called `Wafer Preparation Cleanroom`:
+In this example we will map the clean room as an area called `Wafer Preparation Cleanroom`:
 
 **Facility View**:
 
@@ -191,7 +198,7 @@ In our setup page the template will automatically generate the two driver quicks
 
 Let's take a look at the sensor data. I will use control flow for these integrations. 
 
-Control flow is still in preview and is a different way to design iot workflows. Data flow, the previouse designer, is still maintained and has a lot of use cases where it really shines but for others it has its downsides. Control flow shines in being very fast and responsive it offers a deterministic and sequential flow that allows for the system to be more performant, it loses a bit of data visibility. Data flow is very good in showing how data passes between tasks. So, both have their use cases, in this example where I really want crank up the amount of data I am collecting I will use Control flow.
+Control flow is still in preview and is a different way to design iot workflows. Data flow, the previous designer, is still maintained and has a lot of use cases where it really shines but for others it has its downsides. Control flow shines in being very fast and responsive it offers a deterministic and sequential flow that allows for the system to be more performant, it loses a bit of data visibility. Data flow is very good in showing how data passes between tasks. So, both have their use cases, in this example where I really want crank up the amount of data I am collecting I will use Control flow.
 
 ![Automation Controller Sensor Data](img/controller-sensordata.png)
 
