@@ -3,7 +3,7 @@ title: "Clean Room Monitoring"
 description: "Clean Room Monitoring Use Case."
 summary: "Clean Room Monitoring Use Case."
 categories: ["IoT"]
-tags: [ "`MQTT`", "restserver", "dataplatform"]
+tags: [ "MQTT", "RESTServer", "dataplatform"]
 #externalUrl: ""
 date: 2025-03-11
 draft: false
@@ -119,7 +119,7 @@ We could create an event that would keep all the relevant information, and would
 
 ### Create an Automation Driver Definition REST Server
 
-The REST Server will host REST APIs that can be invoked by `REST Client`s. The driver definition is where we can define what are the available APIs of our REST Server.
+The REST Server will host REST APIs that can be invoked by REST Clients. The driver definition is where we can define what are the available APIs of our REST Server.
 
 For this example the REST API will have to support receiving a JSON Payload:
 
@@ -216,13 +216,23 @@ Notice that we will create a new output of name `sensor` which will be an expres
 
 ![Controller Event](img/controller-event.png)
 
-I added a new output called topic. In Control flow we can add outputs that are transformation of other values. In this case I extracted the tutorial from the raw event `{{ $this.eventRawData.values[0].originalValue.topic }}`. In Control flow everything that is in between `{{ }}` is an expression and can acess contextual values using $ and name of context. If for example I wanted to see everything that existed in eventRawData I could add a log message task with an expression `{{ stringify($evt_cleanroom_temp.eventRawData) }} and this would log all acessible elements of the event.
+I added a new output called topic. In Control flow we can add outputs that are transformation of other values. In this case I extracted the tutorial from the raw event `{{ $this.eventRawData.values[0].originalValue.topic }}`. In Control flow everything that is in between `{{ }}` is an expression and can acess contextual values using $ and name of context. If for example I wanted to see everything that existed in eventRawData I could add a log message task with an expression
+
+```
+{{ stringify($evt_cleanroom_temp.eventRawData) }}
+```
+
+and this would log all acessible elements of the event.
 
 {{< alert "circle-info" >}}
 **Info:** The names of all the tasks are automatically generated when dragged and dropped but can be changed to be more friendly.
 {{< /alert >}}
 
-In the regular expression task we can now add as an input the `topic` output of the `evt_cleanroom_temp` task, by adding an expression `{{ $evt_cleanroom_temp.topic }}`.
+In the regular expression task we can now add as an input the `topic` output of the `evt_cleanroom_temp` task, by adding an expression: 
+
+```
+{{ $evt_cleanroom_temp.topic }}
+```
 
 ![Controller Event](img/controller-regularexpression-view.png)
 
@@ -246,7 +256,11 @@ Now we no longer need the regular expression to parse the topic, but we will nee
 
 ![Automation Controller Collect Particle Data Post](img/controller-collectparticledata-post.png)
 
-We will now specify that the values are not just one but an array of three: `{{ [ $evt_air_quality.pm2_5, $evt_air_quality.pm10, $evt_air_quality.co2,$evt_air_quality.voc ] }}`.
+We will now specify that the values are not just one but an array of three: 
+
+```
+{{ [ $evt_air_quality.pm2_5, $evt_air_quality.pm10, $evt_air_quality.co2,$evt_air_quality.voc ] }}
+```
 
 ---
 
@@ -366,6 +380,14 @@ Notice we are retrieving this infomation from the `Data Manager` and by specifyi
 ![Grafana Dashboard](img/grafana.png)
 
 We can see by the metrics in the table below that we are really sending a lot of data points and our system is behaving nicely.
+
+If we spend a little bit of effort we can leverage our sensor data to construct more advanced dashboards.
+
+![Grafana Advanced Dashboard](img/grafana-advanced.png)
+
+In this view we can filter by the ISA95, for example Enterprise *QuantumChip Technologies*, Site *Silicon Valley Fab*, Facility *QuantumChip Fab America* and we will see a dashboard with all the sensor data for each area. The areas are collapsable and show the live monitoring sensor feed. Also we can see the agregate consolidated as a gauge chart. We also have a geographical position of our sensors in the map area. Remember that in our example, the air quality monitoring sensors also posted their location coordinates, so we can leverage those to feed the map.
+
+When you have a standardized and contextualized dataset all of these charts become possible.
 
 ## Summary
 
