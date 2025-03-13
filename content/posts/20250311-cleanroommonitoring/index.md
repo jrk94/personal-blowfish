@@ -389,6 +389,26 @@ In this view we can filter by the ISA95, for example Enterprise *QuantumChip Tec
 
 When you have a standardized and contextualized dataset all of these charts become possible.
 
+### OData Feed
+
+The Grafana dashboards are just the tip of the data iceberg. All the datasets are available to be incorporated in your analytics tools via an OData Feed. 
+
+Querying the `Data Manager` via a URL request to the OData feed of our `Sensor Telemetry Data` dataset already provides results:
+
+![OData Feed](img/ODataFeed.png)
+
+Let's use MS Excel to connect to the OData Feed.
+
+![Excel OData Feed Login](img/OData-Login-Excel.png)
+
+![Excel OData Feed Preview](img/OData-Excel-Preview.png)
+
+We can already see that our connection was successful and that we have data in our OData feed. Let's Load the feed.
+
+![Excel OData Feed Data](img/OData-Excel-Data.png)
+
+Notice how now we have a live connection to our OData feed, we can now transform the Excel datasheet as a normal set of data. In this example we use MS Excel, but of course all the premium Data Analytics tools will support a similar data connection.
+
 ## Summary
 
 The goal of this post was just to showcase a very simple example of obtaining and handling data. Further transformations can be done on the data to create more views, now it's up to the user to now what he is looking for and traverse the data in search of information.
