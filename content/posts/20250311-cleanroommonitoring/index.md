@@ -373,19 +373,25 @@ We can now use this data by quering the `Data Manager`. We can use for example M
 
 For this example we can create a Grafana dashboard that consumes this Dataset.
 
+We will retrieve this infomation from the `Data Manager`, by specifying the dataset `UserDefined.SensorTelemetryData`.
+
 ![Grafana Dashboard Definition](img/grafana-definition.png)
 
-Notice we are retrieving this infomation from the `Data Manager` and by specifying the dataset `UserDefined.SensorTelemetryData`. This example is very simple and is trying to aggregate very disparate data, still we are able to select individual sensors and see what is happening at any given time.
+This example is very simple and is trying to aggregate very disparate data, still we are able to see all sensors and see what is happening at any given time.
 
 ![Grafana Dashboard](img/grafana.png)
 
-We can see by the metrics in the table below that we are really sending a lot of data points and our system is behaving nicely.
+We can still select individual sensors or groups of sensors in a specific time frame. For example selecting temp1 and humidity1.
+
+![Grafana Dashboard One Sensor](img/grafana-onesensor.png)
+
+We can see by the metrics in the table below the graph that we are really sending a lot of data points and our system is behaving nicely.
 
 If we spend a little bit of effort we can leverage our sensor data to construct more advanced dashboards.
 
 ![Grafana Advanced Dashboard](img/grafana-advanced.png)
 
-In this view we can filter by the ISA95, for example Enterprise *QuantumChip Technologies*, Site *Silicon Valley Fab*, Facility *QuantumChip Fab America* and we will see a dashboard with all the sensor data for each area. The areas are collapsable and show the live monitoring sensor feed. Also we can see the agregate consolidated as a gauge chart. We also have a geographical position of our sensors in the map area. Remember that in our example, the air quality monitoring sensors also posted their location coordinates, so we can leverage those to feed the map.
+In this view we can filter by the ISA95, for example Enterprise *QuantumChip Technologies*, Site *Silicon Valley Fab*, Facility *QuantumChip Fab America* and we will see a dashboard with all the sensor data for each area. The areas are collapsable and show the live monitoring sensor feed. We can see the agregate consolidated values as a gauge chart and have a geographical position of our sensors in the map area. Remember that in our example, the air quality monitoring sensors also posted their location coordinates, so we can leverage those to feed the map.
 
 When you have a standardized and contextualized dataset all of these charts become possible.
 
@@ -407,7 +413,7 @@ We can already see that our connection was successful and that we have data in o
 
 ![Excel OData Feed Data](img/OData-Excel-Data.png)
 
-Notice how now we have a live connection to our OData feed, we can now transform the Excel datasheet as a normal set of data. In this example we use MS Excel, but of course all the premium Data Analytics tools will support a similar data connection.
+We now have a live connection to our OData feed, where we can freely transform the Excel datasheet as a normal set of data. In this example we used MS Excel, but of course all the premium Data Analytics tools will support a similar data connection.
 
 ## Summary
 
