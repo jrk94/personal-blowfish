@@ -20,7 +20,7 @@ For this use case I chose to use `MQTT` and the `REST Server` driver.
 
 `MQTT` is very common for simple sensors that publish information to a topic. We will create virtual humidity and temperature sensors and we will post that information to IoT Dataplatform via MES. 
 
-I also wanted to use this opportunity to showcase how `Connect IoT` can orchestrate multiple drivers, in this scenario they are not as intertwined as for example a docking station and a main machine, but still it shows how we can leverage the MES for a functional grouping. Therefore, we will also use the `REST Server` driver. It will be used to receive calls from a devide measuring the air quality of the clean room.
+I also wanted to use this opportunity to showcase how `Connect IoT` can orchestrate multiple drivers, in this scenario they are not as intertwined as for example a docking station and a main machine, but still it shows how we can leverage the MES for a functional grouping. Therefore, we will also use the `REST Server` driver. It will be used to receive calls from a device measuring the air quality of the clean room.
 
 We will have three types of sensors:
 - temperature
@@ -45,7 +45,7 @@ In this example we will map the clean room as an area called `Wafer Preparation 
 
 We can see how the MES fills in the model with information about the `Wafer Preparation Cleanroom`. It is part of an ISA95 structure with a facility, site and enterprise. 
 
-It is a big comparative advantage of `Connect IoT` to be able to embbeb the data from sensors into a common standard.
+It is a big comparative advantage of `Connect IoT` to be able to embed the data from sensors into a common standard.
 
 ---
 
@@ -71,7 +71,7 @@ For now, we will create them with the default settings.
 
 ![REST Server Automation Protocol](img/restserver_protocol.png)
 
-Notice that their settings are completely different. This is normal as each transport protocol has its own specificieties. In `Connect IoT`, when creating a driver you can specify all the settings that are particular to your driver.
+Notice that their settings are completely different. This is normal as each transport protocol has its own specificities. In `Connect IoT`, when creating a driver you can specify all the settings that are particular to your driver.
 
 ---
 
@@ -79,7 +79,7 @@ Notice that their settings are completely different. This is normal as each tran
 
 The `Automation Driver Definition` will be where we map the relevant fields of the specification. Here is where we will configure all the events that we want to listen or commands that we want to execute.
 
-The tutorial has a very simple example of of collecting temperatures and humidities. In this example, all topics have three levels i.e *waferprep/WPF-Temperature/WPF-Temp1* or *waferprep/WPF-Humidity/WPF-Humidity1* the second level *WPF-Temperature* or *WPF-Humidity* is what will inform the system if this value is for temperature or humidity.
+The tutorial has a very simple example of collecting temperatures and humidities. In this example, all topics have three levels i.e *waferprep/WPF-Temperature/WPF-Temp1* or *waferprep/WPF-Humidity/WPF-Humidity1* the second level *WPF-Temperature* or *WPF-Humidity* is what will inform the system if this value is for temperature or humidity.
 
 {{< alert "circle-info" >}}
 **Info:** In a production setting is very common that the mapping of the system does not have a direct correlation with the MES. Here is where `Connect IoT` can serve as middleware to map everything into a common standard.
@@ -417,6 +417,6 @@ We now have a live connection to our OData feed, where we can freely transform t
 
 ## Summary
 
-The goal of this post was just to showcase a very simple example of obtaining and handling data. Further transformations can be done on the data to create more views, now it's up to the user to now what he is looking for and traverse the data in search of information.
+The goal of this post was just to showcase a very simple example of obtaining and handling data. Further transformations can be done on the data to create more views, now it's up to the user to know what he is looking for and traverse the data in search of information.
 
 Thank you for reading !!!
