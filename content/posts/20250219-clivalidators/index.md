@@ -3,7 +3,7 @@ title: "CM CLI - Validators - v5.2.0"
 description: "Preemptive Strike."
 summary: "Preemptive Strike."
 categories: ["CM"]
-tags: [ "cm-cli"]
+tags: [ "CM-CLI"]
 #externalUrl: ""
 date: 2025-02-19
 draft: false

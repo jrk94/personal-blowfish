@@ -3,7 +3,7 @@ title: "Secs-Gem and Dynamic States"
 description: "Dynamic State Change with Secs Gem."
 summary: "Dynamic State Change with Secs Gem."
 categories: ["IoT"]
-tags: [ "secs-gem"]
+tags: [ "SECS/GEM"]
 #externalUrl: ""
 date: 2025-02-27
 draft: false

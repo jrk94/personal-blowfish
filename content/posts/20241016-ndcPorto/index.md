@@ -3,7 +3,7 @@ title: "NDC Porto - 2024"
 description: "Take a moment for Learning."
 summary: "Take a moment for Learning."
 categories: ["Conference"]
-tags: [ "ndc"]
+tags: [ "NDC"]
 #externalUrl: ""
 date: 2024-10-16
 draft: false

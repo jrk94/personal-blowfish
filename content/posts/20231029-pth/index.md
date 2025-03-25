@@ -3,7 +3,7 @@ title: "Porto Tech Hub - 2023"
 description: "Stepping out of the bubble."
 summary: "Stepping out of the bubble."
 categories: ["Conference"]
-tags: [ "pth"]
+tags: [ "PTH"]
 #externalUrl: ""
 date: 2023-10-29
 draft: false

@@ -3,7 +3,7 @@ title: "CM CLI - IoT - v5.2.0"
 description: "One Generator to rule them all."
 summary: "One Generator to rule them all."
 categories: ["CM"]
-tags: [ "cm-cli"]
+tags: [ "CM-CLI"]
 #externalUrl: ""
 date: 2025-02-19
 draft: false

@@ -3,7 +3,7 @@ title: "Productronica 2021"
 description: "Going to Productronica, seeing the SMT world."
 summary: "Going to Productronica, seeing the SMT world."
 categories: ["Conference"]
-tags: ["Trip", "productronica"]
+tags: ["Trip", "Productronica"]
 ##externalUrl: ""
 date: 2021-11-18
 draft: false

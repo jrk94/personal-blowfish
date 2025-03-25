@@ -3,7 +3,7 @@ title: "DevOps From Zero To Hero"
 description: "The journey starts with a small step."
 summary: "The journey starts with a small step."
 categories: ["Programmer"]
-tags: [ "myhistory", "devops", "cm-cli"]
+tags: [ "myhistory", "DevOps", "CM-CLI"]
 #externalUrl: ""
 date: 2022-02-26
 draft: false

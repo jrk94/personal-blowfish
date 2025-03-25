@@ -3,7 +3,7 @@ title: "Porto Tech Hub - 2024"
 description: "Carrying the flag."
 summary: "Carrying the flag."
 categories: ["Conference"]
-tags: [ "pth"]
+tags: [ "PTH"]
 #externalUrl: ""
 date: 2024-11-26
 draft: false
