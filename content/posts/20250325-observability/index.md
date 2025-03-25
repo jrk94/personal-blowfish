@@ -17,11 +17,11 @@ A small use case on using `MQTT` and `TCP-IP` drivers for material tracking and 
 
 Previous use cases were very light on control, the greatest advantage of an MES system is not just the ability to collect information and provide context or generate reports, but more importantly to have **actionable control**.
 
-Therefore, for this use case I chose to use a very simple, but common scenario where we have full automation for material tracking and state management. The twist, and it's a very common twist, is that the control is done when we bring two different data producing interfaces and use the MES to provide context and control.
+Therefore, for this use case I chose to use a very simple, but common scenario where we have full automation for material tracking and resource state management. The twist, and it's a very common twist, is that the control is done when we bring two different data producing interfaces and use the MES to provide context and control.
 
 In this example, `MQTT` will provide humidity and temperature control, if the values are above a particular threshold, it will send the machine into a SEMI-E10 `Unscheduled Down`.
 
-Meanwhile, the `TCP-IP` interface is only concerned in controlling the material tracking through the machine. But what happens if we get an event saying that the material is in process, while the machine is an due to an invalid temperature or humidity `Unscheduled Down`?
+Meanwhile, the `TCP-IP` interface is only concerned in controlling the material tracking through the machine. But what happens if we get an event saying that the material is in process, while the machine is an undue state due to an invalid temperature or humidity?
 
 We are going to find out!!!
 
@@ -55,67 +55,15 @@ Notice that for this area, we only have one step, but we could have `N` steps an
 
 ![Factory Explorer](https://image.j-roque.com/posts/20250325-observability/img/factoryexplorer.png)
 
-There were other configurations that are relevant, like creating a product, defining a material flow, defining what services the resource provides. Explanations on these topics is out of scope for our goal today.
+There were other configurations that are relevant, like creating a product, defining a material flow, defining what services the resource provides. Explanations on these topics is out of scope for our goal today. Here are some helpful references to our documentation portal:
+- [Creating a Flow Model](https://help.criticalmanufacturing.com/tutorials/modules/routing-and-dispatching/flow-modeling/flowmodeling/)
+- [How To: Create a Product](https://help.criticalmanufacturing.com/tutorials/modules/materials-and-containers/how-to/howto_createproduct/)
+- [How To: Create a Material](https://help.criticalmanufacturing.com/tutorials/modules/materials-and-containers/how-to/howto_creatematerial/)
+- [How To: Create a Resource](https://help.criticalmanufacturing.com/tutorials/modules/resource-tracking/how-to/howto_createresource/). 
 
 ---
 
-## Connect IoT Structure
-
-`Connect IoT` requires information about what protocols to be used. We will create one for `MQTT` and one for the `TCP-IP` driver. 
-
-{{< alert "circle-info" >}}
-**Info:** Automation Protocols are the meta definitions, all Automation Driver Definitions will inherit the definition of the protocol, even though the controller may override particular parameters. This is helpful for parameters that change dynamically. Normally, most parameters have default values, we define those in the Automation Protocol.
-{{< /alert >}}
-
-### Connect IoT Structure - Overview
-
-Let's try and illustrate the advantages of this architecture with some diagrams.
-
-An `Automation Protocol` can have multiple `Automation Driver Definitions`. They will all inherit the configurations defined in the `Automation Protocol`.
-
-![Relation Protocol Driver Definition](https://image.j-roque.com/posts/20250325-observability/img/relationprotocoldriverdefinition.png)
-
-The `Automation Controller` can then use several driver definitions and articulate them through low code to apply logic to the machine integrations.
-
-![Relation Driver Definition Controller](https://image.j-roque.com/posts/20250325-observability/img/relationcontrollerdriverdefinition.png)
-
-Finally, we have our entity that holds and runs our integration, that is the `Automation Manager` this entity will be able to run different controller instances. The instance is a link between an MES entity and an Automation Controller or Driver. This means that each iot instance can leverage an MES entity to imbue that integration with context.
-
-### Running Structure
-
-A manager can hold two (one controller and one driver) or `N` instances (one controller with `N` drivers or `N` controllers with `N` drivers). 
-
-For example, let´s start with a simple use case, where a **manager has only one controller and two drivers**, which will be the use case in this blog post.
-
-![Manager One Instance](https://image.j-roque.com/posts/20250325-observability/img/relationmanagercontrollerdrivers.png)
-
-In this example, we have a controller instance with a controller `Automation Controller Wafer Station` that is appended to an entity `Resource` called `Wafer Station 01`. We have a driver instance with a driver definition `Automation Driver Definition MQTT Temperature / Humidity Sensor` append also to the same entity. Finally, we have an additional driver instance with a different driver definition `Automation Driver Definition TCP-IP Wafer Inspection` appended to a different entity type `Area`, with the name `Area Wafer Station`.
-
-#### Running Structure - Replication
-
-We can have the use case where we scale the number of instances, for example, per different resource (01 to `N`).
-
-![Manager Multiple Same Instances](https://image.j-roque.com/posts/20250325-observability/img/multiplesameinstances.png)
-
-In this scenario we have the same integration artifacts, but different appended entities. 
-
-Here we see the full potential of having a separation between the concept of an `Automation Controller` and an `Automation Controller Instance`, we can reuse the same `Automation Controller`, creating `N` instances.
-
-#### Running Structure - Mix
-
-We can also have the scenario where we have multiple controllers in the same manager:
-
-![Manager Multiple Different Instances](https://image.j-roque.com/posts/20250325-observability/img/multipledifferentinstances.png)
-
-There is a lot of flexibility on how we can configure what is running in `Connect IoT`. We can also change this while the `Automation Manager` is running, and it will adapt. 
-
-{{< alert "circle-info" >}}
-**Info:** One thing that is always important to take into consideration is the resiliency level that we whish to have. A whole factory in the same `Automation Manager` means that an update or a catastrophic failure in an `Automation Manager` will impact everything in the shopfloor. It is common to find a middle road where the `Automation Manager` has a functional group of instances, for example, controlling all the machines in a line, if there is an issue, it will only impact a single line.
-{{< /alert >}}
-
----
-
-### Create an Automation Protocol MQTT and TCP-IP
+## Create an Automation Protocol MQTT and TCP-IP
 
 For now, we will create them with the default settings.
 
@@ -129,13 +77,18 @@ For now, we will create them with the default settings.
 
 Notice that their settings are completely different. This is normal as each transport protocol has its own specificities. In `Connect IoT`, when creating a driver, you can specify all the settings that are particular to your driver.
 
+
+{{< alert "circle-info" >}}
+**Info:** More information on the Connect IoT structure can be found in [Connect IoT Structure Overview](./../20250325-connectiotstructure).
+{{< /alert >}}
+
 ---
 
-### Create an Automation Driver Definition MQTT
+## Create an Automation Driver Definition MQTT
 
 The `Automation Driver Definition` will be where we map the relevant fields of the specification. Here is where we will configure all the events that we want to subscribe to or commands that we want to execute.
 
-The tutorial has a very simple example of collecting temperatures and humidity readings. In this example, all topics have two levels i.e *waferprep/temperature/* or *waferprep/humidity/*, the second level *temperature* or *humidity* is what will inform the system if this value is for temperature or humidity.
+In this example, all topics have two levels i.e *waferprep/temperature/* or *waferprep/humidity/*, the second level *temperature* or *humidity* is what will inform the system if this value is for temperature or humidity.
 
 {{< alert "circle-info" >}}
 **Info:** In a production setting it is very common that the mapping of the system does not have a direct correlation with the MES. Here is where `Connect IoT` can serve as middleware to map everything into a common standard.
@@ -155,7 +108,7 @@ Setting the system as such will mean that whenever there is a new value for temp
 
 ---
 
-### Create an Automation Driver Definition TCP-IP
+## Create an Automation Driver Definition TCP-IP
 
 The TCP-IP driver allows for active or passive communication. In other words it can behave as a server or a client. The TCP-IP driver is a simple driver as it does not implement a standard communication interface, but it is in fact a transport protocol. It is nevertheless very useful for integrating with simple machines. Machines like barcode readers, metrology or testing is not uncommon to have simple tcp-ip interfaces.
 
@@ -163,7 +116,7 @@ The TCP-IP driver allows for active or passive communication. In other words it 
 **Info:** When facing a protocol that communicates over tcp-ip but has a complex set of handshakes or lifecycle, it is often simpler to create a new custom driver. For example, secs-gem can be over tcp-ip, or the Fuji-Nexim, or for example drivers that use XML over tcp-ip it's often easier to build a driver that manager all the communication interface. Instead of making a very complex controller logic on top of the tcp-ip driver.
 {{< /alert >}}
 
-#### Machine Lifecycle
+### Machine Lifecycle
 
 Our TCP-IP machine will host a TCP-IP Server and will send two messages. 
 
@@ -174,7 +127,7 @@ Both these machines wait for a reply with acknowledgment, if there is no acknowl
 
 ![TCP-IP Machine Flow](https://image.j-roque.com/posts/20250325-observability/img/tcp_machineflow.png)
 
-#### Message Format
+### Message Format
 
 The machine messages will follow a defined format:
 
@@ -194,7 +147,7 @@ The message acknowledge command is similar:
 
 **<STX\><EventId\>,<Material\><ETX\>**
 
-#### Mapping to a Driver Definition - Event
+### Mapping to a Driver Definition - Event
 
 Let's define our properties, we will use regular expressions to extract from the stream all the values that are relevant for us. 
 
@@ -214,7 +167,7 @@ And finally, the event will tie all of this together:
 
 ![Driver Definition Event](https://image.j-roque.com/posts/20250325-observability/img/driverdefinition_event.png)
 
-#### Mapping to a Driver Definition - Command
+### Mapping to a Driver Definition - Command
 
 We will create two commands, one for the **material in** and the other for the **material out**. With the flag `Command device id Usage` as `AtBeginning`, the system will automatically add the device id to our command.
 
@@ -226,7 +179,7 @@ Let's now add our material parameter:
 
 ---
 
-### Create an Automation Controller
+## Create an Automation Controller
 
 Creating our controller, we will specify that it has our two drivers, one for `MQTT` and one for `TCP-IP`.
 
@@ -276,7 +229,7 @@ Let's see what we can do with this controller!!!
 
 ### Automation Manager
 
-I connected the Controller to an Automation Manager, I am using `Hercules` to emulate TCP-IP Server and `mosquitto` to serve as an mqtt broker and to publish messages.
+I connected the Controller to an Automation Manager, I am using [Hercules](https://www.hw-group.com/software/hercules-setup-utility) to emulate TCP-IP Server and [mosquitto](https://github.com/eclipse-mosquitto/mosquitto) to serve as an mqtt broker and to publish messages.
 
 Let's start with the material tracking scenario. First, let's dispatch one of our wafer materials to our station.
 
@@ -384,7 +337,7 @@ The Logging structure is created using the dirname and filename specified in the
 
 ![Controller Logs](https://image.j-roque.com/posts/20250325-observability/img/controller_file.png)
 
-One important highlight is that you can already see when the actions occurred in the Controller layer, which tasks activated in each page and each execution will have a unique identifier. The user can then leverage all this information to backtrace all information.
+One important highlight is that you can already see when the actions occurred in the Controller layer, which tasks activated in each page and each execution will have a unique identifier. The user can then leverage all this information to backtrace all that has occurred in the system.
 
 The logs are not as complete as the ones we saw in the console log, as the console log merges all logging so let´s take a look at the driver tcp-ip logs.
 
@@ -448,7 +401,7 @@ It is also very helpful to bring visibility to errors. Let's see what the error 
 
 ![Observability Error Backend Services](https://image.j-roque.com/posts/20250325-observability/img/observability_Error.gif)
 
-We also have aggregate dashboards where we can see which are the most requested endpoints and the ones that take the most time.
+We also have aggregated dashboards where we can see which are the most requested endpoints and the ones that take the most time.
 
 ![Observability Backend Services Aggregated](https://image.j-roque.com/posts/20250325-observability/img/observability_BE_Metrics.gif)
 
