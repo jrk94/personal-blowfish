@@ -37,11 +37,11 @@ In this example we will map the clean room as an area called `Wafer Preparation 
 
 **Facility View**:
 
-![Facility View](https://j-roque.com/posts/20250311-cleanroommonitoring/img/facilityview.png)
+![Facility View](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/facilityview.png)
 
 **Factory Explorer**: 
 
-![Factory Explorer](https://j-roque.com/posts/20250311-cleanroommonitoring/img/factoryexplorer.png)
+![Factory Explorer](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/factoryexplorer.png)
 
 We can see how the MES fills in the model with information about the `Wafer Preparation Cleanroom`. It is part of an ISA95 structure with a facility, site and enterprise. 
 
@@ -65,11 +65,11 @@ For now, we will create them with the default settings.
 
 `MQTT` **Automation Protocol**:
 
-![`MQTT` Automation Protocol](https://j-roque.com/posts/20250311-cleanroommonitoring/img/mqtt_protocol.png)
+![`MQTT` Automation Protocol](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/mqtt_protocol.png)
 
 `REST Server` **Automation Protocol**:
 
-![REST Server Automation Protocol](https://j-roque.com/posts/20250311-cleanroommonitoring/img/restserver_protocol.png)
+![REST Server Automation Protocol](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/restserver_protocol.png)
 
 Notice that their settings are completely different. This is normal as each transport protocol has its own specificities. In `Connect IoT`, when creating a driver you can specify all the settings that are particular to your driver.
 
@@ -93,11 +93,11 @@ I will set the `Topic Name` as *waferprep/WPF-Temperature/#* for temperature and
 
 In our example, we have to create two properties:
 
-![`MQTT` Automation Driver Definition Property](https://j-roque.com/posts/20250311-cleanroommonitoring/img/mqtt-driverdefinition.png)
+![`MQTT` Automation Driver Definition Property](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/mqtt-driverdefinition.png)
 
 An event and the link between properties and events:
 
-![`MQTT` Automation Driver Definition Event Property](https://j-roque.com/posts/20250311-cleanroommonitoring/img/mqtt-driverdefinition-event.png)
+![`MQTT` Automation Driver Definition Event Property](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/mqtt-driverdefinition-event.png)
 
 We are informing the system that whenever there is a new publish for the topic *waferprep/WPF-Temperature/#* we want an event to be generated. 
 
@@ -154,19 +154,19 @@ In our example, we have to create seven properties to match the fields of our JS
 
 In the case of the `device_id` it is a first order value:
 
-![REST Server Driver Definition Property](https://j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition.png)
+![REST Server Driver Definition Property](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition.png)
 
 In latitude it is under location:
 
-![REST Server Driver Definition Property Latitude](https://j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition-latitude.png)
+![REST Server Driver Definition Property Latitude](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition-latitude.png)
 
 In our event we will define our api routing and verb. We can also define if the reply is to be given manually or automatic. If it's set as automatic it means that the driver will reply, even before sending to the controller. This is helpful for use cases of fire and forget sensor data, like our use case.
 
-![REST Server Driver Definition Event](https://j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition-event.png)
+![REST Server Driver Definition Event](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition-event.png)
 
 We can now build our event:
 
-![REST Server Driver Definition Event Properties](https://j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition-event-prop.png)
+![REST Server Driver Definition Event Properties](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/restserver-driverdefinition-event-prop.png)
 
 Notice that by separating properties from events it means you can reuse properties in different events. This is helpful if you have api calls that have similar structures, for example metadata headers, you can just reuse the properties.
 
@@ -176,11 +176,11 @@ Notice that by separating properties from events it means you can reuse properti
 
 Creating our controller we will specify that it has our two drivers:
 
-![Automation Controller](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller.png)
+![Automation Controller](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller.png)
 
 For this use case I also explored creating some custom tasks which I will explain in a different blog post:
 
-![Automation Controller Packages](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-packages.png)
+![Automation Controller Packages](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-packages.png)
 
 Notice how I have a `Custom DataPlatform Library`, this is my customization package. It has two tasks to simplify the post to dataplatform and to automatically resolve the `ISA95`.
 
@@ -188,7 +188,7 @@ Notice how I have a `Custom DataPlatform Library`, this is my customization pack
 
 In our setup page the template will automatically generate the two driver quickstart. I will just add a new element to store the entity instance associated with this controller. This way we can reuse it for resolving the ISA95.
 
-![Automation Controller Setup](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-setup.png)
+![Automation Controller Setup](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-setup.png)
 
 {{< alert "circle-info" >}}
 **Info:** In this example, I am statically defining address and port and other settings for convenience. In a normal productive use case these would be dynamically resolved, from an entity attribute, a table or some other way.
@@ -200,7 +200,7 @@ Let's take a look at the sensor data. I will use control flow for these integrat
 
 Control flow is still in preview and is a different way to design iot workflows. Data flow, the previous designer, is still maintained and has a lot of use cases where it really shines but for others it has its downsides. Control flow shines in being very fast and responsive it offers a deterministic and sequential flow that allows for the system to be more performant, it loses a bit of data visibility. Data flow is very good in showing how data passes between tasks. So, both have their use cases, in this example where I really want crank up the amount of data I am collecting I will use Control flow.
 
-![Automation Controller Sensor Data](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-sensordata.png)
+![Automation Controller Sensor Data](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-sensordata.png)
 
 We have two events, they are very similar let's look at temperature. 
 
@@ -210,11 +210,11 @@ In our flow we have the `Clean Room Monitor Temperature` event as the wrapper fo
 
 We will extract the sensor name from the topic i.e *waferprep/WPF-Temperature/WPF-Temp1* would be `WPF-Temp1`. So we will apply a regular expression task to retrieve all that is after the last `/`.
 
-![Controller Regular Expression](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-regularexpression.png)
+![Controller Regular Expression](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-regularexpression.png)
 
 Notice that we will create a new output of name `sensor` which will be an expression `[^/]+$` applied to the input of the regular expression. The `topic` is specific to `MQTT` and therefore not a default part of the event we must retrieve it from the event.
 
-![Controller Event](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-event.png)
+![Controller Event](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-event.png)
 
 I added a new output called topic. In Control flow we can add outputs that are transformation of other values. In this case I extracted the tutorial from the raw event `{{ $this.eventRawData.values[0].originalValue.topic }}`. In Control flow everything that is in between `{{ }}` is an expression and can acess contextual values using $ and name of context. If for example I wanted to see everything that existed in eventRawData I could add a log message task with an expression
 
@@ -234,7 +234,7 @@ In the regular expression task we can now add as an input the `topic` output of 
 {{ $evt_cleanroom_temp.topic }}
 ```
 
-![Controller Event](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-regularexpression-view.png)
+![Controller Event](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-regularexpression-view.png)
 
 The Retrieve Instance is very simple and will retrieve the instance stored in the `Setup` page.
 
@@ -242,7 +242,7 @@ The `Send Post Telemetry Numeric data to Data Platform` is a simplified version 
 
 IoT Data Platform out of the box comes with two iot events for integrations, the PostTelemetry and the PostMetrology. PostMetrology is tied to material that is in process, where as PostTelemetry is targeting ad-hoc data, similar to what we have in our use case. That is why I created a trimmed down version of the `API Post Event` just for the PostTelemetry.
 
-![Controller Post Event](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-postevent.png)
+![Controller Post Event](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-postevent.png)
 
 In the post event task we can define all the contextual information, some will be infered by the instance, but we can define the units, I am also saving the sensor name as a tag and the parameter name as Temperature.
 
@@ -250,11 +250,11 @@ In the post event task we can define all the contextual information, some will b
 
 This is very similar but dedicated to the REST request to post air monitoring data.
 
-![Automation Controller Collect Particle Data](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-collectparticledata.png)
+![Automation Controller Collect Particle Data](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-collectparticledata.png)
 
 Now we no longer need the regular expression to parse the topic, but we will need a different task to post the `Post Multiple Numeric Telemetry`. In the other sensor a post matched one value, in this case we will have multiple datapoints each one for different value types.
 
-![Automation Controller Collect Particle Data Post](https://j-roque.com/posts/20250311-cleanroommonitoring/img/controller-collectparticledata-post.png)
+![Automation Controller Collect Particle Data Post](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/controller-collectparticledata-post.png)
 
 We will now specify that the values are not just one but an array of three: 
 
@@ -274,11 +274,11 @@ I connected the Controller to an Automation Manager and developed a test applica
 
 Test application generating `MQTT` publishes and `REST Client` calls:
 
-![Test Application](https://j-roque.com/posts/20250311-cleanroommonitoring/img/testapplication.png)
+![Test Application](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/testapplication.png)
 
 Manager Ingesting the Data:
 
-![Manager](https://j-roque.com/posts/20250311-cleanroommonitoring/img/manager.png)
+![Manager](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/manager.png)
 
 We are sending now a lot of sensor information to `Connect IoT` that is ingesting it, adding context and posting it to data platform.
 
@@ -286,7 +286,7 @@ We are sending now a lot of sensor information to `Connect IoT` that is ingestin
 
 The data posted by the automation manager is stored in a kafka topic for raw messages,
 
-![Kafka Raw](https://j-roque.com/posts/20250311-cleanroommonitoring/img/kafka-raw.png)
+![Kafka Raw](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/kafka-raw.png)
 
 Example message:
 
@@ -345,7 +345,7 @@ We can see that the message has all the relevant ISA95 context, `Connect IoT` wh
 
 The data will be processed from a raw messages kafka topic into the correct kafka topic, in this case for the post telemetry:
 
-![Kafka Post Telemetry](https://j-roque.com/posts/20250311-cleanroommonitoring/img/kafka-posttelemetry.png)
+![Kafka Post Telemetry](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/kafka-posttelemetry.png)
 
 The data is then written to the database i.e Clikhouse. We can then in the MES generate new datasets over those tables and create new views on that data.
 
@@ -353,19 +353,19 @@ The data is then written to the database i.e Clikhouse. We can then in the MES g
 
 When an iot event definition is created a matching dataset is created, for example for post telemetry we already have a dataset:
 
-![Post Telemetry Dataset](https://j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-posttelemetry.png)
+![Post Telemetry Dataset](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-posttelemetry.png)
 
 We can then define new datasets that are views over existing datasets. Let's for example create a new data set called the `Sensor Telemetry Dataset`.
 
-![Sensor Telemetry Dataset](https://j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-sensortelemetry.png)
+![Sensor Telemetry Dataset](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-sensortelemetry.png)
 
 Which exists as a view on top of our `PostTelemetry` dataset, defined in this query.
 
-![Sensor Telemetry Dataset Query](https://j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-sensortelemetry-query.png)
+![Sensor Telemetry Dataset Query](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-sensortelemetry-query.png)
 
 As the dataset for post telemetry already has data we can now see the data for our new dataset in the MES.
 
-![Sensor Telemetry Dataset Data](https://j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-sensortelemetry-data.png)
+![Sensor Telemetry Dataset Data](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/datasets-sensortelemetry-data.png)
 
 We can now use this data by quering the `Data Manager`. We can use for example Microsoft Excel or any other tool that is able to consume OData, or query the data by REST or gRPC.
 
@@ -375,21 +375,21 @@ For this example we can create a Grafana dashboard that consumes this Dataset.
 
 We will retrieve this infomation from the `Data Manager`, by specifying the dataset `UserDefined.SensorTelemetryData`.
 
-![Grafana Dashboard Definition](https://j-roque.com/posts/20250311-cleanroommonitoring/img/grafana-definition.png)
+![Grafana Dashboard Definition](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/grafana-definition.png)
 
 This example is very simple and is trying to aggregate very disparate data, still we are able to see all sensors and see what is happening at any given time.
 
-![Grafana Dashboard](https://j-roque.com/posts/20250311-cleanroommonitoring/img/grafana.png)
+![Grafana Dashboard](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/grafana.png)
 
 We can still select individual sensors or groups of sensors in a specific time frame. For example selecting temp1 and humidity1.
 
-![Grafana Dashboard One Sensor](https://j-roque.com/posts/20250311-cleanroommonitoring/img/grafana-onesensor.png)
+![Grafana Dashboard One Sensor](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/grafana-onesensor.png)
 
 We can see by the metrics in the table below the graph that we are really sending a lot of data points and our system is behaving nicely.
 
 If we spend a little bit of effort we can leverage our sensor data to construct more advanced dashboards.
 
-![Grafana Advanced Dashboard](https://j-roque.com/posts/20250311-cleanroommonitoring/img/grafana-advanced.png)
+![Grafana Advanced Dashboard](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/grafana-advanced.png)
 
 In this view we can filter by the ISA95, for example Enterprise *QuantumChip Technologies*, Site *Silicon Valley Fab*, Facility *QuantumChip Fab America* and we will see a dashboard with all the sensor data for each area. The areas are collapsable and show the live monitoring sensor feed. We can see the agregate consolidated values as a gauge chart and have a geographical position of our sensors in the map area. Remember that in our example, the air quality monitoring sensors also posted their location coordinates, so we can leverage those to feed the map.
 
@@ -401,17 +401,17 @@ The Grafana dashboards are just the tip of the data iceberg. All the datasets ar
 
 Querying the `Data Manager` via a URL request to the OData feed of our `Sensor Telemetry Data` dataset already provides results:
 
-![OData Feed](https://j-roque.com/posts/20250311-cleanroommonitoring/img/ODataFeed.png)
+![OData Feed](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/ODataFeed.png)
 
 Let's use MS Excel to connect to the OData Feed.
 
-![Excel OData Feed Login](https://j-roque.com/posts/20250311-cleanroommonitoring/img/OData-Login-Excel.png)
+![Excel OData Feed Login](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/OData-Login-Excel.png)
 
-![Excel OData Feed Preview](https://j-roque.com/posts/20250311-cleanroommonitoring/img/OData-Excel-Preview.png)
+![Excel OData Feed Preview](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/OData-Excel-Preview.png)
 
 We can already see that our connection was successful and that we have data in our OData feed. Let's Load the feed.
 
-![Excel OData Feed Data](https://j-roque.com/posts/20250311-cleanroommonitoring/img/OData-Excel-Data.png)
+![Excel OData Feed Data](https://image.j-roque.com/posts/20250311-cleanroommonitoring/img/OData-Excel-Data.png)
 
 We now have a live connection to our OData feed, where we can freely transform the Excel datasheet as a normal set of data. In this example we used MS Excel, but of course all the premium Data Analytics tools will support a similar data connection.
 
