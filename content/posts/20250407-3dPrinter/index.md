@@ -11,13 +11,13 @@ authors:
   - Roque
 ---
 
-Integrating a [Prusa mini 3D printer]("https://www.prusa3d.com/category/original-prusa-mini/") into an MES system.
+Integrating a [Prusa mini 3D printer](https://www.prusa3d.com/category/original-prusa-mini/) into an MES system.
 
 # Overview
 
-I have been wanting to integrate my personal 3D printer for some time and I think it's a good and simple example of how you can map integration touch points to bring visibility and control to the shopfloor. Also, it's not uncommon to see additive manufacturing elements being brought to the shopfloor, either for prototyping, spare parts production or event for the production process itself.
+I have been wanting to integrate my personal 3D printer into the CM MES for some time. I think it's a simple example of how you can map integration touch points to bring visibility and control to the shopfloor. It's not uncommon to see additive manufacturing elements being brought to the shopfloor, either for prototyping, spare parts production or event for the production process itself.
 
-The 3D Printer has a Raspberry Pi 4b with a camera and is running [OctoPi]("https://octoprint.org/"). OctoPi is a very common, remote controller and UI for 3D printer control. It uses the printer serial port interface and is able to send and receive information from the printer.
+The 3D Printer has a Raspberry Pi 4b with a camera and is running [OctoPi](https://octoprint.org/). OctoPi is a very common, remote controller and UI for 3D printer control. It uses the printer serial port interface and is able to send and receive information from the printer.
 
 ![3D Printer](https://image.j-roque.com/posts/20250407-3dPrinter/img/3dprinter.jpg)
 
@@ -632,6 +632,14 @@ I created a `Bolt-001` material and will now, like we did with the nut, produce 
 <video controls width="100%">
   <source src="https://image.j-roque.com/posts/20250407-3dPrinter/img/bolt_printing.mp4" type="video/mp4">
 </video>
+
+We can also take a look at what happened in our process from the perspective of our raw materials. Looking at our raw material and consumable feeder:
+
+![Consumable Consumption](https://image.j-roque.com/posts/20250407-3dPrinter/img/mes-assemble.gif)
+
+We can also see how all of this information is now part of our material genealogy:
+
+![Material Genealogy](https://image.j-roque.com/posts/20250407-3dPrinter/img/mes-genealogy.gif)
 
 ## Summary
 
