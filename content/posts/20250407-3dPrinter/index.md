@@ -34,7 +34,7 @@ For this integration, we will:
 
 For this scenario we will have a resource `3d Printer` and a step `3d Print`. The `3d Printer` will also have a resource consumable feed called `Filament Feeder`.
 
-The consumable feeds in the MES is where we can attach our raw materials so that they are able to be consumed. In my use case my printer has only one filament slot, but for other printers we could have several consumable feeds each one capable of having different materials with different products, for example the use case of multiple colors or multiple filament types.
+The consumable feeds in the MES are where we can attach our raw materials, so that they are able to be consumed. In my use case my printer has only one filament slot, but for other printers we could have several consumable feeds each one capable of having different materials with different products, for example the use case of multiple colors or multiple filament types.
 
 ![Resource View Consumable Feed](https://image.j-roque.com/posts/20250407-3dPrinter/img/resource-consumablefeed.png)
 
@@ -154,13 +154,15 @@ Creating our controller, we will specify that it has one driver for `REST Client
 
 In our setup page the template will automatically generate the driver quickstart. In previous posts we used `Data Flow` when creating the controller and it generated the template in `Data Flow` this time I chose `Control Flow`, so we will have an example of a `Control Flow` template.
 
-For setting up the connection, we will configure our connection, then call a function, if successful we will finish the connection cycle. For simpler setup cycles, the OnInitialize event has an auto setup flag that will merge both actions. The call function will check what is the current communication status. If the status is `Closed` it means we will need to perform the connection from OctoPi to the Printer. If it's `Operational` or `Printing` it means the system is already live and running.
+For setting up the connection, we will configure our connection, then call a function, if successful we will finish the connection cycle. For simpler setup cycles, the OnInitialize event has an auto setup flag that will merge both actions, of course this is contingent on your specific integration. 
+
+The call function will check what is the current communication status. If the status is `Closed` it means we will need to perform the connection from OctoPi to the Printer. If it's `Operational` or `Printing` it means the system is already live and running.
  
 Depending on your integration boot cycles and what constitutes being connected can be simpler or more complex.
 
 ![Automation Controller Setup](https://image.j-roque.com/posts/20250407-3dPrinter/img/setup.png)
 
-In yellow, we can see the initialization of the driver, here we will set all the communication values, like the REST API to connect to, port and for OctoPi the API token. All OctoPi requests must have a header X-API-Key with the api key. This would be very cumbersome to have to configure this in the driver definition for all the requests. That is way you can define it in the Equipment Configuration.
+In yellow, we can see the initialization of the driver, here we will set all the communication values, like the REST API to connect to, port and for OctoPi the API token. All OctoPi requests must have a header X-API-Key with the api key. This would be very cumbersome to have to configure this in the driver definition for all the requests. That is why you can define it in the Equipment Configuration and it will impact all the requests.
 
 ![Automation Controller Setup API](https://image.j-roque.com/posts/20250407-3dPrinter/img/mes-setupapikey.png)
 
@@ -269,9 +271,13 @@ For the `Recipe Body Requested`, when we receive a call we will use the recipe i
 
 ### Recipe Selection - MES
 
-When we have a running manager with this controller we can use this integration to chose a recipe. We can create a recipe and choose a body with `Source` `Downloaded From Equipment`. The action of `Get Recipe` will query the `Recipe List Requested` for the selection of recipes and then when selecting `Download Recipe` it will grab a Base64 string and store it in the MES and also create a Recipe Checksum.
+When we have a running manager with this controller we can use this integration to chose a recipe. We can create a recipe and choose a body with `Source` `Downloaded From Equipment`. The action of `Get Recipe` will query the `Recipe List Requested` for the instance of the selected Resource. For the selection of recipes and then when selecting `Download Recipe` it will grab a Base64 string and store it in the MES and also create a Recipe Checksum.
 
 ![MES Select Recipe](https://image.j-roque.com/posts/20250407-3dPrinter/img/select-recipe.gif)
+
+{{< alert "circle-info" >}}
+**Info:** A Resource can be used for Recipe Download if it has recipe management enabled, automation mode `Online` and then has the recipe relevant checkboxes. The Resources available for the `Get Recipe` are the one's configured as mode `Online` and with the checkboxes enabled.
+{{< /alert >}}
 
 - [Recipe Management](https://help.criticalmanufacturing.com/tutorials/modules/recipe-management/?h=recipe/)
 - [Manage Recipe Body](https://help.criticalmanufacturing.com/userguide/business-data/recipe/manage_recipe_body/?h=recipe%2F/#step-1-manage-body)
