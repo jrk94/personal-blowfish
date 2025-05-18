@@ -11,7 +11,7 @@ authors:
   - Roque
 ---
 
-A testing framework for IoT low code testing. All detailed information about this tool can be found in the [developer portal](https://developer.criticalmanufacturing.com/explore/guides/customizations/automation/how-tos/workflow_testing/), the goal of this blog post is to present some use cases.
+In this post I am going to introduce the use of a testing framework for IoT low code flow testing, using machine simulators. All detailed information about this tool can be found in the [developer portal](https://developer.criticalmanufacturing.com/explore/guides/customizations/automation/how-tos/workflow_testing/), the goal of this blog post is to present some use cases.
 
 ## Low Code
 
@@ -21,13 +21,21 @@ Low code is great at bringing increased transparency to whatever it is you're do
 
 We have extensive documentation in how to build tests for low code components like tasks or converters [documentation on unit testing](https://developer.criticalmanufacturing.com/explore/guides/customizations/automation/how-tos/unit_tests/). These allow you to create your custom components and create test suites to guarantee that they behave as expected.
 
+[Unit Tests](https://image.j-roque.com/posts/20250516-testinglowcode/img/devportalunittest.png)
+
 The major challenge is moving from component level testing to flow testing or integration testing. We guarantee the behavior of our task and converter, but how can we guarantee the behavior of a chain of tasks and converters, and how can we guarantee that adding a driver for protocol X or Y will not break your implementation. 
 
 This is a big concern, particularly in integrations that have complex flows. The challenge we gave ourselves was then to create a tool that would allow us to test full on integrations, but still be simple, extensible, fast and autonomous.
 
+### Simple
+
 It needs to be simple, we can't create a framework for automation that works in low code and then have it be very complex to build tests. It also needs to be simple to incentivize an increase in testing as a way to reduce manual qualification time and to improve the overall quality of the deliverables. If tests are very cumbersome, people will avoid doing them and will default to manual testing.
 
+### Extensible
+
 Extensibility is very important, it is not enough for the tool to support out of the box protocols and features. It needs to be able to work with custom protocols and even for it to be possible to customize components of it without having to change the whole tool.
+
+### Fast & Autonomous
 
 Fast and autonomous are very important features. One of the challenges of previous tools was that they were focused in having all components of the integration running. So you would need a full on MES environment with all of its components up and working and then you would need to have a test suite that would connect to the environment and perform actions and then eventually get to test the automation layer. This is of course a very valid scenario for full on functional tests, but it is very cumbersome for all other kinds of testing and also it is very slow. What we started seeing is that as projects grow, the time it takes for the tests to run grows exponentially. Also, if tests are slow, people will avoid running them or creating them as they will be seen as a time sink. Another aspect of this is that as tests become less isolated and try to test multiple running components at the same time, they tend to be flaky and are of course very hard to parallelize.
 
@@ -37,7 +45,9 @@ We wanted to build a tool that was still able to perform functional tests with a
 
 A bit of a side topic, but one that I think is pertinent is how to develop an integration. It is a common paradigm in everyday backend software development to write code and then write unit tests and eventually some integration tests. For equipment integration or any kind of interfacing software this is normally a very messy and error prone way to develop. 
 
-A more interesting way to develop is to have a more test driven development way of coding, because you will test how your integration responds to different external inputs. In other words, you want to have the machine send an event with a set of data and see how your integration responds, and in my experience it's easier to create a test of a machine sending an event and validating what you expect to happen, than creating an integration and then build the test to send an event. It seems like it shouldn't matter, but it does as if you do this latter you may realize in the end that there are problems in the interfacing that influence the whole concept behind your integration.
+A more interesting way to develop is to have a more test driven development way of coding, because you will test how your integration responds to different external inputs. 
+
+In other words, you want to have the machine send an event with a set of data and see how your integration responds. In my experience it's easier to create a test of a machine sending an event and validating what you expect to happen, than creating an integration and then build the test to send an event. It seems like it shouldn't matter, but it does as if you do this latter you may realize in the end that there are problems in the interfacing that influence the whole concept behind your integration.
 
 This is to say that an easy way to build tests it's also a way to vastly increase not only the quality of development but also the implementation time.
 
@@ -45,7 +55,7 @@ This is to say that an easy way to build tests it's also a way to vastly increas
 
 ### Importing the dependencies
 
-Critical Manufacturing already shares a couple of important .Net nugets in order to use this tool. 
+Critical Manufacturing already shares a couple of important .Net nugets in order to use this tool, in https://criticalmanufacturing.io. 
 
 The nugets that are required depend on what the user wishes to test. For each protocol that is supported by the tool a different nuget is required, for example, in this post I will show tests of an integration using for example MQTT, therefore I will have to import the nuget `Cmf.ConnectIoT.TestOrchestrator.Plugin.Simulator.MQTT`. The testing tool will also start an automation manager, so we need to provide a startup plugin for now we have available the `Cmf.ConnectIoT.TestOrchestrator.Plugin.StartMode.Local`, finally we have some additional one's for utilities `Cmf.ConnectIoT.TestOrchestrator.Core.ScenarioBuilder` and `Cmf.ConnectIoT.TestOrchestrator.Core.Common`. If you wish to use the tool in the standalone mode without a running MES system you will also need the `Cmf.ConnectIoT.TestOrchestrator.Plugin.StartMode.Local` nuget.
 
@@ -61,13 +71,18 @@ I created a new solution called IoTTest and added all the required dependencies.
 
 Let's create an example of a test for the autonomous (without MES) mode.
 
-I have created a very simple MQTT integration.
+
+#### Workflow
+
+I have created a very simple MQTT integration, for an example of this check out [Clean Room Monitoring](../20250311-cleanroommonitoring/index.md).
 
 ![Set Mqtt Props](https://image.j-roque.com/posts/20250516-testinglowcode/img/setmqttpropsworkflow.png)
 
 This workflow will receive a message from the message bus topic `Cmf.MQTT.SendMessage` and will set the equipment property `message` with a constant value `OK`.
 
 Let's build our test...
+
+#### Building a Scenario
 
 MSTest supports several different hooks like `TestClassInitialize` or `TestInitialize`. Let's create our scenario configuration in our test initialize method.
 
@@ -163,6 +178,8 @@ public void MQTTPublish()
 }
 ```
 
+#### Test Setup
+
 The first element of our test is
 
 ```csharp
@@ -189,6 +206,8 @@ system.WaitForAllComunicating(20);
 #endregion Setup
 ```
 
+#### Test Run
+
 The test itself is quite simple. The workflow is expecting to receive a message bus message to the topic `Cmf.MQTT.SendMessage` and it will the reply with an `OK`. So our test is sending a message to the topic and subscribe an MQTT client to the topic that expects the message and validate that the message received is as expected.
 
 ```csharp
@@ -214,6 +233,8 @@ scenario.Utilities.WaitFor(50, "No message was received", () =>
 {{< alert "circle-info" >}}
 **Info:** Note that the mqtt simulator happens in a different thread as the main thread so this code would not work, without the WaitFor messagesWasReceived.
 {{< /alert >}}
+
+#### Test Execution
 
 <video controls width="100%">
   <source src="https://image.j-roque.com/posts/20250516-testinglowcode/img/mqttpublish.mp4" type="video/mp4">
