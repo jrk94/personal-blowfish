@@ -19,11 +19,11 @@ Low code is great at bringing increased transparency to whatever it is you're do
 
 ## Motivation
 
-We have extensive documentation in how to build tests for low code components like tasks or converters [documentation on unit testing](https://developer.criticalmanufacturing.com/explore/guides/customizations/automation/how-tos/unit_tests/). These allow you to create your custom components and create test suites to guarantee that they behave as expected.
+We have extensive documentation on how to build tests for low code components like tasks or converters ([documentation on unit testing](https://developer.criticalmanufacturing.com/explore/guides/customizations/automation/how-tos/unit_tests/)). These allow you to create your custom components and create test suites to guarantee that they behave as expected.
 
-[Unit Tests](https://image.j-roque.com/posts/20250516-testinglowcode/img/devportalunittest.png)
+![Unit Tests](https://image.j-roque.com/posts/20250516-testinglowcode/img/devportalunittest.png)
 
-The major challenge is moving from component level testing to flow testing or integration testing. We guarantee the behavior of our task and converter, but how can we guarantee the behavior of a chain of tasks and converters, and how can we guarantee that adding a driver for protocol X or Y will not break your implementation. 
+The major challenge is moving from component level testing to flow testing or integration testing. We guarantee the behavior of our task and converter, but how can we guarantee the behavior of a chain of tasks and converters, and how can we guarantee that adding a driver for protocol X or Y will not break your implementation? 
 
 This is a big concern, particularly in integrations that have complex flows. The challenge we gave ourselves was then to create a tool that would allow us to test full on integrations, but still be simple, extensible, fast and autonomous.
 
@@ -33,13 +33,13 @@ It needs to be simple, we can't create a framework for automation that works in 
 
 ### Extensible
 
-Extensibility is very important, it is not enough for the tool to support out of the box protocols and features. It needs to be able to work with custom protocols and even for it to be possible to customize components of it without having to change the whole tool.
+Extensibility is very important, it is not enough for the tool to support out of the box protocols and features. It needs to be able to work with custom protocols and also to develop your own tool plugins.
 
 ### Fast & Autonomous
 
-Fast and autonomous are very important features. One of the challenges of previous tools was that they were focused in having all components of the integration running. So you would need a full on MES environment with all of its components up and working and then you would need to have a test suite that would connect to the environment and perform actions and then eventually get to test the automation layer. This is of course a very valid scenario for full on functional tests, but it is very cumbersome for all other kinds of testing and also it is very slow. What we started seeing is that as projects grow, the time it takes for the tests to run grows exponentially. Also, if tests are slow, people will avoid running them or creating them as they will be seen as a time sink. Another aspect of this is that as tests become less isolated and try to test multiple running components at the same time, they tend to be flaky and are of course very hard to parallelize.
+Fast and autonomous are very important features. One of the challenges of previous tools was that they were focused on having all components of the integration running. So you would need a full on MES environment with all of its components up and working and then you would need to have a test suite that would connect to the environment and perform actions and then eventually get to test the automation layer. This is of course a very valid scenario for full on functional tests, but it is very cumbersome for all other kinds of testing and also it is very slow. What we started seeing is that as projects grow, the time it takes for the tests to run grows exponentially. Also, if tests are slow, people will avoid running them or creating them as they will be seen as a time sink. Another aspect of this is that as tests become less isolated and try to test multiple running components at the same time, they tend to be flaky and are of course very hard to parallelize.
 
-We wanted to build a tool that was still able to perform functional tests with a full on live MES System, but also that was able to run, completely without any MES interaction.
+We wanted to build a tool that was still able to perform functional tests with a full on live MES System, but also that was able to run completely without any MES interaction.
 
 ## Development Process
 
@@ -47,9 +47,9 @@ A bit of a side topic, but one that I think is pertinent is how to develop an in
 
 A more interesting way to develop is to have a more test driven development way of coding, because you will test how your integration responds to different external inputs. 
 
-In other words, you want to have the machine send an event with a set of data and see how your integration responds. In my experience it's easier to create a test of a machine sending an event and validating what you expect to happen, than creating an integration and then build the test to send an event. It seems like it shouldn't matter, but it does as if you do this latter you may realize in the end that there are problems in the interfacing that influence the whole concept behind your integration.
+In other words, you want to have the machine send an event with a set of data and see how your integration responds. In my experience it's easier to create a test of a machine sending an event and validating what you expect to happen, than creating an integration and then build the test to send an event. It seems like it shouldn't matter, but it does as if you do this later you may realize in the end that there are problems in the interfacing that influence the whole concept behind your integration.
 
-This is to say that an easy way to build tests it's also a way to vastly increase not only the quality of development but also the implementation time.
+This is to say that an easy way to build tests is also a way to vastly increase not only the quality of development but also the implementation time.
 
 ## Building a Test
 
@@ -57,7 +57,7 @@ This is to say that an easy way to build tests it's also a way to vastly increas
 
 Critical Manufacturing already shares a couple of important .Net nugets in order to use this tool, in https://criticalmanufacturing.io. 
 
-The nugets that are required depend on what the user wishes to test. For each protocol that is supported by the tool a different nuget is required, for example, in this post I will show tests of an integration using for example MQTT, therefore I will have to import the nuget `Cmf.ConnectIoT.TestOrchestrator.Plugin.Simulator.MQTT`. The testing tool will also start an automation manager, so we need to provide a startup plugin for now we have available the `Cmf.ConnectIoT.TestOrchestrator.Plugin.StartMode.Local`, finally we have some additional one's for utilities `Cmf.ConnectIoT.TestOrchestrator.Core.ScenarioBuilder` and `Cmf.ConnectIoT.TestOrchestrator.Core.Common`. If you wish to use the tool in the standalone mode without a running MES system you will also need the `Cmf.ConnectIoT.TestOrchestrator.Plugin.StartMode.Local` nuget.
+The nugets that are required depend on what the user wishes to test. For each protocol that is supported by the tool a different nuget is required. For example, in this post I will show tests of an integration using for example MQTT, therefore I will have to import the nuget `Cmf.ConnectIoT.TestOrchestrator.Plugin.Simulator.MQTT`. The testing tool will also start an automation manager, so we need to provide a startup plugin. For now we have available the `Cmf.ConnectIoT.TestOrchestrator.Plugin.StartMode.Local`, finally we have some additional one's for utilities `Cmf.ConnectIoT.TestOrchestrator.Core.ScenarioBuilder` and `Cmf.ConnectIoT.TestOrchestrator.Core.Common`. If you wish to use the tool in the standalone mode without a running MES system you will also need the `Cmf.ConnectIoT.TestOrchestrator.Plugin.StartMode.Local` nuget.
 
 If you wish to also use CM's framework you can also import the [Light Business Objects](https://developer.criticalmanufacturing.com/explore/guides/customizations/business/lightbusinessobjects/).
 
@@ -74,7 +74,7 @@ Let's create an example of a test for the autonomous (without MES) mode.
 
 #### Workflow
 
-I have created a very simple MQTT integration, for an example of this check out [Clean Room Monitoring](../20250311-cleanroommonitoring/index.md).
+I have created a very simple MQTT integration, for an example of this check out [Clean Room Monitoring](../20250311-cleanroommonitoring).
 
 ![Set Mqtt Props](https://image.j-roque.com/posts/20250516-testinglowcode/img/setmqttpropsworkflow.png)
 
@@ -189,7 +189,7 @@ new TestScenario(Configuration).Run((scenario, context) =>
 What this code does is enclose a test run in a scenario execution. It will give to the test orchestrator the responsibility in each run of this test to start a Manager from scratch, start the simulators and then make sure everything is shutdown in the end of the test. 
 
 {{< alert "circle-info" >}}
-**Info:** This approach is the simplest one, but can become a bit too slow as the test number increases. You can also choose to handle yourself the start and stop of the test orchestrator and have a Manager run through your class of tests. Decreasing the Manager start time, from once per test to once per test class. In this scenario you would have to be careful to avoid test bleed over.
+**Info:** This approach is the simplest one, but can become a bit too slow as the test number increases. You can also choose to handle yourself the start and stop of the test orchestrator and have a Manager run through your class of tests, decreasing the Manager start time, from once per test to once per test class. In this scenario you would have to be careful to avoid test bleed over.
 {{< /alert >}}
 
 The setup region is where we will wait for the Connect IoT Manager to boot up the controllers and drivers and for them to connect to the equipment simulators.
@@ -231,7 +231,7 @@ scenario.Utilities.WaitFor(50, "No message was received", () =>
 ```
 
 {{< alert "circle-info" >}}
-**Info:** Note that the mqtt simulator happens in a different thread as the main thread so this code would not work, without the WaitFor messagesWasReceived.
+**Info:** Note that the mqtt simulator happens in a different thread as the main thread so this code would not work without the WaitFor messagesWasReceived.
 {{< /alert >}}
 
 #### Test Execution
@@ -344,7 +344,7 @@ public void PostEvent()
   }
 ```
 
-The test setup is the same. In this test we will use the `system.ApiHandlingManager` to register our mock api. Whenever our API is called, the callback will activate. We will then check the request we received and reply back with the expect object. By registering APIs we are able to test all interactions from the MES to the Automation layer.
+The test setup is the same. In this test we will use the `system.ApiHandlingManager` to register our mock api. Whenever our API is called, the callback will activate. We will then check the request we received and reply back with the expected object. By registering APIs we are able to test all interactions from the MES to the Automation layer.
 
 ### Example IPC-CFX Running MES System
 
@@ -390,7 +390,7 @@ public void Initialize()
 
 For this test I used a downloaded manager from the system and I am connecting to the system using the downloaded configuration. The IPC-CFX simulator will require me to add a broker, a CFX Endpoint and also information about my integration endpoint.
 
-My test will now consist of sending CFX messages and validate that in the MES the corresponding object are in the correct state. here we will focus on testing the material tracking events.
+My test will now consist of sending CFX messages and validate that in the MES the corresponding object are in the correct state. Here we will focus on testing the material tracking events.
 
 ```csharp
 (...)
