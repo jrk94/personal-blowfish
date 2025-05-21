@@ -60,7 +60,7 @@ Is the work of that team affecting a lot of other components inside the organiza
 
 For example, a specialty team focused on an application that has no great externalities is probably a team with a low organizational impact. A team that is working on migrating the database technology probably has a big impact as it has a lot of externalities. If the technology provides a performance improvement, that improvement will be felt by all other applications that interact with the database. One other key aspect is more commercial or business oriented, which is to think if that team has a big impact in the overall strategy or viability of the company and if it has an impact in revenue generation, future or present.
 
-Teams that deliver fast and quality work on areas that are not strategic for the organization or that do not have ROI are as a whole failing to have impact. These teams are always on the cusp of being shelved as they have low visibility for the wider organization and my seem like they are redundant.
+Teams that deliver fast and quality work on areas that are not strategic for the organization or that do not have ROI are as a whole failing to have impact. These teams are always on the cusp of being shelved as they have low visibility for the wider organization and may seem like they are redundant.
 
 ![Low Impact Team](https://image.j-roque.com/posts/20250514-subtleartofjelling/lowimpact-team.png)
 <center><i>Low Impact Team</i></center>
@@ -97,7 +97,7 @@ First, he should do what any good manager should do, which is protect his teams 
 He will therefore try to talk with his team and understand if there are trade offs to be made, baroque features that can be trimmed out, MVPs that can be carved out and ways to reduce complexity and lower the time to delivery. Let's say he decreases one month, he is still missing 2 months, what can he do?
 
 ![Lack of Time](https://image.j-roque.com/posts/20250514-subtleartofjelling/lack-of-time-or-running-out-of-time-concept-vector.jpg)
-<center><i>https://www.vecteezy.com/vector-art/2118256-lack-of-time-or-running-out-of-time-concept</i></center>
+<i>https://www.vecteezy.com/vector-art/2118256-lack-of-time-or-running-out-of-time-concept</i>
 
 #### Adding Team Capacity
 
@@ -117,7 +117,7 @@ In the short term it reduces overall team performance and cohesion, it is inevit
 
 Be wary of this initial performance impact, if you are facing a time crunch this may be suicidal. Also, bear in mind that the rest of the team when pressed for time, may be very adverse in investing time in training the new member, particularly if he is seen as someone that is just there for a limited amount of time.
 
-A functional team may look robust like a robust mast on your ship, but often than not it's more similar to the last play of a Jenga game. Keep in mind that every time that you cause team disruption you are removing and adding a wood plank in the Jenga tower.
+A functional team may look robust like a robust mast on your ship, but often than not it's more similar to the last play of a Jenga game. Keep in mind that every time you cause team disruption you are removing and adding a wood plank in the Jenga tower.
 
 You will be reducing initial performance and severely impacting the team cohesion, in search of a possible future gain in performance.
 
@@ -175,7 +175,7 @@ Note that your pushing a team for a certain period of time. Not all people are t
 
 Well, the undertone of all of this is jelling matters. People are people, we could wish they weren't, we can complain, shout and squirm, but reality always wins. 
 
-You now Bob and Tod that are aces together, they've worked together for 5 years and have a lot of respect for each other. Bob he's a genius, he knows the architecture like the palm of his hand, but he only works well with Tod, cause they've been through hell and back and Tod is the human interface to Bob. Change Tod to another team and his technical weaknesses start to show. Change Bob to be a team lead and brace yourselves for the never ending soap opera, of a an elephant on the china store of human interactions.
+You know Bob and Tod that are aces together, they've worked together for 5 years and have a lot of respect for each other. Bob he's a genius, he knows the architecture like the palm of his hand, but he only works well with Tod, cause they've been through hell and back and Tod is the human interface to Bob. Change Tod to another team and his technical weaknesses start to show. Change Bob to be a team lead and brace yourselves for the never ending soap opera, of a an elephant on the china store of human interactions.
 
 Managers are people and they see a problem and want to mitigate it. They have a big red button called reshuffle and damn how tempting is to press it. It's like a Casino dealer reshuffling all the cards and suddenly you have a new game. Changing the cards has a steep cost. People that work together well are something to foster and cultivate. 
 
