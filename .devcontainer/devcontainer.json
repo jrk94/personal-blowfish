@@ -1,0 +1,25 @@
+{
+    "name": "Hugo Blowfish Blog",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "forwardPorts": [
+        1313
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/sh"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/app,type=bind"
+    ],
+    "postCreateCommand": "hugo mod tidy",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "yzhang.markdown-all-in-one",
+                "esbenp.prettier-vscode",
+                "streetsidesoftware.code-spell-checker"
+            ]
+        }
+    }
+}
