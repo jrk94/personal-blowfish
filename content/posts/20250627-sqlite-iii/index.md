@@ -178,7 +178,7 @@ For example, for `LineRecipeSetup` we are expecting the schema:
 }
 ```
 
-When we know store we will store only json objects that obey the schema structure. We will store them in the table `LineRecipeSetup`. We can also specify meaningful indexes, for example for this json document the recipe full path will be a table index.
+When we now store we will store only json objects that obey the schema structure. We will store them in the table `LineRecipeSetup`. We can also specify meaningful indexes, for example for this json document the recipe full path will be a table index.
 
 ![Multiple Table Stores](https://image.j-roque.com/posts/20250625-sqlite-iii/storingdatabase.gif)
 
@@ -254,6 +254,8 @@ WHERE json_extract(data, '$.RecipeFullPath') = 'Line7\80627_758_0005\81712_990_0
   AND json_extract(data, '$.SetupFullPath') = 'Line7\80627_758_0005';
 ```
 
+We can now try the query both on the SQLite Client and in the Connect IoT task. We will add the query in the Query SQLite task and log the outcome. The outcome is a large payload with the json document.
+
 ![Raw Query](https://image.j-roque.com/posts/20250625-sqlite-iii/rawquery.gif)
 
 I can have the values in the query, or use the `?` and pass the values as params.
@@ -264,6 +266,8 @@ FROM LineRecipeSetup
 WHERE json_extract(data, '$.RecipeFullPath') = '?'
   AND json_extract(data, '$.SetupFullPath') = '?';
 ```
+
+Now we just need to change our Connect IoT task to have parameters. When we execute the task we can see that it is able to execute and returns the corresponding JSON document.
 
 ![Raw Query with Question Marks](https://image.j-roque.com/posts/20250625-sqlite-iii/rawquerywithquestionmarks.gif)
 
@@ -288,7 +292,7 @@ public override async onChanges(changes: Task.Changes): Promise<void> {
 }
 ```
 
-Notice how by abstracting the SQLite layer, this makes our task very simple. The Query SQLite task is just an entrypoint to the SQLite Manager. It receives the query and params and will call the rawQuery method.
+Notice how by abstracting the SQLite layer, this makes our task very simple. The Query SQLite task is just an entrypoint to the SQLite Manager. It receives the query and params and will call the `rawQuery` method.
 
 ```ts
 public rawQuery(query: string, params: string[]) {
@@ -498,7 +502,7 @@ public flexibleSearch(documentType: string,
 }
 ```
 
-These types of helpers allow for the developer to create a very simple experience for all others consumers of his task. The user no longers need to be an expert in creating SQL queries. He can leverage a simple task to create his implementations.
+These types of helpers allow for the developer to create a very simple experience for all other consumers of his task. The user no longer needs to be an expert in creating SQL queries. He can leverage a simple task to create his implementations.
 
 Of course for more advanced users they can still use the raw query where they fully control what is being used.
 
