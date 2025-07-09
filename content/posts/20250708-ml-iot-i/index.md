@@ -1,7 +1,7 @@
 ---
-title: "Machine Learning for Defect Detection"
-description: "Creating a full on implementation"
-summary: "Creating a full on implementation"
+title: "Part I - Data Ingestion - Machine Learning for Defect Detection"
+description: "Ingesting machine data and crossing it against defects"
+summary: "Ingesting machine data and crossing it against defects"
 categories: ["Machine Learning"]
 tags: ["Machine Learning", "CDM", "IoT", "Dataset"]
 ##externalUrl: ""
