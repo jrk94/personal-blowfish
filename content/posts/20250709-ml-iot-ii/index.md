@@ -1,7 +1,7 @@
 ---
 title: "Part II - Scenario - Machine Learning for Defect Detection"
 description: "Showcasing a prediction scenario"
-summary: "howcasing a prediction scenario"
+summary: "Showcasing a prediction scenario"
 categories: ["Machine Learning"]
 tags: ["Machine Learning", "CDM", "IoT", "Dataset"]
 ##externalUrl: ""
