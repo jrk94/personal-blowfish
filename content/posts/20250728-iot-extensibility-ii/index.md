@@ -13,7 +13,7 @@ authors:
 
 Simple problems, have simple solutions, the trick is having simple solutions for very complex problems.
 
-[Part I](https://j-roque.com/posts/20250728-iot-extensibility-i/)
+[Part I](https://j-roque.com/posts/20250725-iot-extensibility-i/)
 
 ## Overview
 
@@ -118,7 +118,7 @@ We can access and use the appended iot entity attributes and properties to allow
 
 A common use case is an OPC-UA server, that maps the tags of the machines with the same routing, only varies by adding the machine name in the routing node structure.
 
-Let's image this use case, where we have `Station 01` and `Station 02`, the node for the production status is defined `ns=4;s=Station01.production.status` and `ns=4;s=Station02.production.status` respectively. Notice that both these node ids are very similar, they only change by adding the specific machine identifier in the node structure.
+Let's imagine this use case, where we have `Station 01` and `Station 02`, the node for the production status is defined `ns=4;s=Station01.production.status` and `ns=4;s=Station02.production.status` respectively. Notice that both these node ids are very similar, they only change by adding the specific machine identifier in the node structure.
 
 ![Token Diagram](https://image.j-roque.com/posts/20250728-iot-extensibility-ii/tokendiagram.png)
 
@@ -126,7 +126,7 @@ We can leverage our IoT Architecture where we have the `Resource` as the appende
 
 Using tokens can be a very powerful abstraction tool, that easily saves a lot of time and maintainability by saving the amount of driver definitions the user needs to maintain. A common drawback is when the user "abuses" the use of tokens. A token is by definition a dynamic resolution of a value, if you have several tokens or combination of tokens it can become very hard to troubleshoot if there is a problem in the final value resolution.
 
-![Token Example](https://image.j-roque.com/posts/20250728-iot-extensibility-ii/token_example.png)
+![Token Example](https://image.j-roque.com/posts/20250728-iot-extensibility-ii/token_example_drivedef.png)
 
 ## Final Thoughts
 

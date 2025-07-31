@@ -13,7 +13,7 @@ authors:
 
 Making it complex, in order to make it simple.
 
-[Part I](https://j-roque.com/posts/20250728-iot-extensibility-i/)
+[Part I](https://j-roque.com/posts/20250725-iot-extensibility-i/)<br>
 [Part II](https://j-roque.com/posts/20250728-iot-extensibility-ii/)
 
 ## Overview
@@ -71,6 +71,8 @@ For File Raw, we can [see](https://help.criticalmanufacturing.com/userguide/auto
 
 With this strategy by using the `Send Notification to Driver` task we have fully delegated the driver command execution to the outside world. As long as it receives a payload that respects the contract of what is a command it is able to execute.
 
+In this diagram we can see that on the left side, the command is being triggered by invoking the task `Execute Equipment Command` with the command `CreateDirectory`, which is known in the workflow statically. On the right side, we are using the task `Send Notification to Driver` and the workflow is fully agnostic to the command. In the second use case the external invoker can pass whichever definition he wishes, but has to provide the full command definition.
+
 ![Diagram Custom Command](https://image.j-roque.com/posts/20250728-iot-extensibility-iii/diagramfilerawcustomcommand.png)
 
 If we wanted to execute other types of commands our workflow wouldn't change as it would act as passthrough for the customization that is provided by the received message.
@@ -87,7 +89,7 @@ Note that in this case it is a message bus listener task, but we could also have
 
 ### Use Case - Code Task Send Raw
 
-The same can be achieved with a `Code` Task. When dragging and dropping a task in the connect iot workflow, it will query the user if it will be used by a controller or by a driver. If the user selects driver, the driver api will be available in the code task.
+The same can be achieved with a `Code` Task. When dragging and dropping a task in the Connect IoT workflow, it will query the user if it will be used by a controller or by a driver. If the user selects driver, the driver api will be available in the code task.
 
 ![Code Task Send Raw Workflow](https://image.j-roque.com/posts/20250728-iot-extensibility-iii/codetasksendrawworkflow.png)
 
