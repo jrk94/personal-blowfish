@@ -177,9 +177,9 @@ The Instruments controller is now a compounding of `Station->Inspection->Instrum
 
 In the instruments controller, we are now free to use all the available workflows. We can even override workflows that were inherited. By **overriding** we are **creating an editable copy of the original workflow**. 
 
-We are always able to revert to the parent workflow. This is very helpful when we need to perform some specific logic that is latter provided by our parent controller. We can just revert back to the new version of the parent workflow.
+We are always able to revert to the parent workflow. This is very helpful when we need to perform some specific logic that is later provided by our parent controller. We can just revert back to the new version of the parent workflow.
 
-Also, we have a native integration between child and all its genealogy. When in a workflow of a child controller a with a simple button press the user is directed to the view of that workflow in its original controller.
+Also, we have a native integration between child and all its genealogy. When in a workflow of a child controller, with a simple button press the user is directed to the view of that workflow in its original controller.
 
 ## Final Thoughts
 
