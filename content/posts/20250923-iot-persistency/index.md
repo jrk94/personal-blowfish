@@ -21,7 +21,7 @@ We will also see new improvements in version **11.2 to the persistency API**.
 
 The **MES** is great at keeping all the **information** regarding **what is happening in the shop floor**. Nevertheless, there are different levels of information required for each of the shopfloor applications.
 
-An **ERP**, from a manufacturing perspective, is focused on **information** that will have **financial impact**. Like losses, like raw materials spent and materials produced. It is focused on storing information that will be helpful in assessing the financial health of the organization. The MES is harder to pinpoint, it holds information about multiple facets of the shop floor, from production to quality to machine recipes.
+An **ERP**, from a manufacturing perspective, is focused on **information** that will have **financial impact**. It focuses on material losses, raw materials spent and materials produced. It is focused on storing information that will be helpful in assessing the financial health of the organization. The MES is harder to pinpoint, it holds information about multiple facets of the shop floor, from production to quality to machine recipes.
 
 The **integration layer** also requires a particular subset of information that may be only relevant for its layer. It is important for the integration layer to have the ability to be somewhat stateful. This can be due to performance or simply to **keep machine logic in the integration layer, separate from the business layer**.
 
@@ -43,7 +43,7 @@ One common example is, some machines use the concept of virtual ids, they receiv
 
 Connect IoT has out of the box support for storing data. Data can either be stored **in memory** or **in file**. 
 
-The file persistency has a memory cache and a file persistency. This allows the user to have very fast data access and resiliency. In case of an application crash, the system is able to load the information stored in the file, loading the file to memory.
+The file persistency consists of two layers, a memory cache and a file persistency. This allows the user to have very fast data access and resiliency. In case of an application crash, the system is able to load the information stored in the file, loading the file to memory.
 
 ### Temporary Storage
 
@@ -160,7 +160,7 @@ Starting with the classical case, we will store values 1, 2 and 3 and we will re
 
 ![FIFO Workflow](https://image.j-roque.com/posts/20250923-iot-persistency/FIFOWorkflow.png)
 
-Now seeing it run, we can see that we are doing a consecutive storage of 1, 2 and 3. Then we using a loop to retrieve the values of the queue, in the order they entered the queue.
+Now seeing it run, we can see that we are doing a consecutive storage of 1, 2 and 3. Then we are using a loop to retrieve the values of the queue, in the order they entered the queue.
 
 ![FIFO Example](https://image.j-roque.com/posts/20250923-iot-persistency/fifoexample.gif)
 
