@@ -52,7 +52,7 @@ In order to achieve this we can either use the `Driver Actions` tasks or the `Co
 
 In all the drivers that support custom extensibility, there is a subsection dedicated to the format of the message they are expecting and the topic.
 
-For File Raw, we can [see](https://help.criticalmanufacturing.com/userguide/automation/automation-protocol/automation-protocol-protocols/driver_fileraw/#execute-command) that in order to perform commands it is expecting a command in the topic `connect.iot.driver.fileBased.executeCommand` and gives us the following example payload:
+For File Raw, we can [see](https://help.criticalmanufacturing.com/userguide/automation/definition/automation-protocol/automation-protocol-protocols/driver_fileraw/?h=driver+file+raw) that in order to perform commands it is expecting a command in the topic `connect.iot.driver.fileBased.executeCommand` and gives us the following example payload:
 
 ```json
 {
