@@ -111,6 +111,12 @@ messagingSenderId = "94735413612"
 appId = "1:94735413612:web:6318e15c6ce09798cc8349"
 measurementId = "G-X8Q4Q1MJN1"
 
+[clarity]
+enabled = true
+projectId = "ud6gsnt8o8"   # your Clarity project ID
+testing = false            # set true if you want to debug Klaro
+privacyPolicy = "/privacy/"
+
 [fathomAnalytics]
 
 [umamiAnalytics]

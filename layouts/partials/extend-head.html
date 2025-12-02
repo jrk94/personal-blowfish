@@ -1,0 +1,136 @@
+{{- with site.Params.clarity }}
+  {{- if .enabled }}
+
+    <!-- Klaro styles -->
+    <link rel="stylesheet" href="https://unpkg.com/klaro/dist/klaro.css">
+
+    <!-- Klaro color overrides to match Blowfish primary blue -->
+    <style>
+    :root {
+        /* Map Klaro's accent colors to Blowfish primary palette */
+        --green1: rgb(var(--color-primary-500));
+        --green2: rgb(var(--color-primary-400));
+        --green3: rgb(var(--color-primary-300));
+        --blue1: rgb(var(--color-primary-500));
+        --blue2: rgb(var(--color-primary-400));
+    }
+
+    .klaro .cookie-modal.cm-klaro,
+    .klaro .cookie-modal-notice {
+        border-radius: 0.75rem;
+    }
+
+    .klaro .cookie-modal .cm-header h1,
+    .klaro .cookie-modal .cm-header h2 {
+        font-weight: 600;
+    }
+
+    .klaro .cookie-modal .cm-btn,
+    .klaro .cookie-notice .cm-btn {
+        border-radius: 9999px;
+        padding: 0.4rem 0.9rem;
+    }
+
+    /* Fix spacing between footer buttons (match Klaro's selector) */
+    .klaro .cookie-modal .cm-modal .cm-footer .cm-footer-buttons {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-end !important;
+        gap: 0.5rem;
+    }
+
+    .klaro .cookie-modal .cm-modal .cm-footer .cm-footer-buttons .cm-btn {
+        margin: 0 !important;
+    }
+    </style>
+
+    <!-- Clarity stub: define window.clarity so the tag script can attach to it later -->
+    <script>
+      // This does NOT send any data by itself; it just queues calls.
+      window.clarity = window.clarity || function() {
+        (window.clarity.q = window.clarity.q || []).push(arguments);
+      };
+    </script>
+
+    <!-- Klaro configuration -->
+    <script>
+      window.klaroConfig = {
+        version: 1,
+
+        testing: {{ if .testing }}true{{ else }}false{{ end }},
+
+        mustConsent: true,
+        noticeBanner: false,
+
+        acceptAll: true,
+        acceptNecessary: true,
+
+        privacyPolicy: "{{ .privacyPolicy | default "/privacy/" }}",
+
+        translations: {
+          en: {
+            consentModal: {
+              title: "We value your privacy",
+              description:
+                "We use cookies and similar technologies to understand how you use this site and to improve it. " +
+                "Please choose your preferences before continuing."
+            },
+            consentNotice: {
+              learnMore: "Customize",
+              changeDescription:
+                "We updated our privacy choices since your last visit, please review them."
+            },
+            ok: "Accept all",
+            acceptAll: "Accept all",
+            acceptNecessary: "Accept only necessary",
+            save: "Save selection"
+          }
+        },
+
+        services: [
+          {
+            name: "microsoft-clarity",
+            title: "Microsoft Clarity",
+            purposes: ["analytics"],
+            default: false, // not active until user opts in
+            callback: function (consent, service) {
+              console.log("Clarity consent given?", consent);
+              if (!consent) return;
+
+              // Avoid loading Clarity multiple times
+              if (window.__clarityLoaded) return;
+              window.__clarityLoaded = true;
+
+              // Safety: ensure stub exists even if this runs before the stub block for some reason
+              window.clarity = window.clarity || function() {
+                (window.clarity.q = window.clarity.q || []).push(arguments);
+              };
+
+              var s = document.createElement("script");
+              s.async = true;
+              s.src = "https://www.clarity.ms/tag/{{ .projectId }}";
+              document.head.appendChild(s);
+            }
+          }
+        ]
+      };
+    </script>
+
+    <!-- Klaro script -->
+    <script
+      defer
+      src="https://unpkg.com/klaro/dist/klaro.js"
+      data-no-auto-init>
+    </script>
+
+    <!-- Initialize Klaro after page load -->
+    <script>
+      window.addEventListener("load", function () {
+        if (window.klaro && window.klaroConfig) {
+          window.klaro.setup(window.klaroConfig);
+        }
+      });
+    </script>
+
+  {{- end }}
+{{- end }}
