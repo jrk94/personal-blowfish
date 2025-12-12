@@ -1,0 +1,19 @@
+<a href="{{ .Get "url" }}" target="_blank" rel="noopener" class="group block relative rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition no-lightbox">
+  <div class="aspect-video relative bg-zinc-800">
+    <img 
+      src="{{ .Get "image" }}" 
+      alt="{{ .Get "title" }}" 
+      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 no-lightbox" 
+      loading="lazy"
+      decoding="async"
+    >
+
+    <!-- Hover overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+
+    <!-- Badge -->
+    <div class="absolute top-2 right-2 bg-white/90 dark:bg-zinc-900/80 text-xs text-zinc-800 dark:text-zinc-100 px-2 py-0.5 rounded shadow">
+      External
+    </div>
+  </div>
+</a>
