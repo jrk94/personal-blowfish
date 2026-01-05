@@ -301,6 +301,58 @@ Defects are no longer discovered only at inspection — they are **anticipated**
 
 ---
 
+## Other Examples
+
+### Outlier Detection
+
+Outlier detection is a process of identifying data points that deviate significantly from the normal pattern in a dataset. These outliers often indicate potential issues such as equipment failures, anomalies in production, or irregular environmental conditions.
+
+By setting up an outlier detection low code workflow, in CM MES you can:
+
+- Proactively address issues before they escalate.
+- Monitor production data for unusual trends.
+- Integrate alerts and actions for seamless operations.
+
+For this particular use case we have a sample with two clear patterns. We need a quick way of segmenting data into two groups: `normal` and `abnormal`.
+
+For that we will use [`isolation forest algorithm`](https://en.wikipedia.org/wiki/Isolation_forest) provided by Data Platform. 
+
+Data Platform comes out of the box with a large selection of algorithms, choose the one more appropriate to your goal. 
+
+{{< alert "circle-info" >}}
+**Info:** After the model is trained, we can use the score parameter to identify anomalies by applying thresholds.
+{{< /alert >}}
+
+We will have a low code workflow that is using the machine learning task with the above model to generate predictions. We are then sending the prediction value into a new IoT Event.
+
+In order for us to be able to see the algorithm selection we created a Grafana dashboard that looks into all the stored values for the new IoT Event.
+
+![Outlier Detection](https://image.j-roque.com/posts/20251215-machinelearning/dashboard_outlier_detection.png)
+
+In the dashboard we can easily see two clusters of data and some anomalies. In our low code workflow we are just visualizing the data, but as mentioned above we could perform further actions depending on the prediction.
+
+### Predictive Maintenance
+
+Predictive maintenance has become a cornerstone of the next leap of modern smart manufacturing, and this milling machine use case demonstrates how operational data can be transformed into actionable insight. 
+
+By continuously collecting telemetry such as tool wear, temperatures, torque, rotational speed, and power consumption, the system moves away from reactive maintenance and toward a data-driven, proactive approach. Instead of relying on fixed schedules or operator intuition, maintenance decisions are informed by real machine behavior and statistically validated failure patterns. With an MES we are able to use not only machine data, but also process data, product data and past maintenance data.
+
+![Problem Statement](https://image.j-roque.com/posts/20251215-machinelearning/pdm_diagram.png)
+
+At the core of the solution is a machine-learning model that estimates Remaining Useful Life (RUL) and classifies multiple failure modes, including tool wear, heat dissipation issues, power anomalies, overstrain, and rare random failures. The model is trained on historical production data and automatically optimized using an AutoML approach, allowing teams to focus on domain knowledge rather than algorithm selection. This design makes the solution both robust and maintainable, while ensuring predictions remain aligned with real-world operating conditions 
+
+![Dataset test](https://image.j-roque.com/posts/20251215-machinelearning/dataset_test.png)
+
+Incoming IoT events trigger predictions that are immediately stored, visualized, and monitored through dashboards, enabling engineers and operators to track degradation trends as they happen. RUL estimates are not static reports but living signals that evolve with machine usage, supporting faster decision-making and reducing unplanned downtime 
+
+Ultimately, this predictive maintenance workflow illustrates how advanced analytics can be operationalized at scale. By closing the loop between data collection, machine learning, and live monitoring, manufacturers gain earlier failure detection, improved asset utilization, and more predictable production outcomes. The result is a practical, production-ready example of how AI can deliver measurable value on the shop floor today—not as an experiment, but as a core operational capability. 
+
+As in the outlier, we can either perform actions based on predictions or setup dashboards to bring visibility.
+
+![Dashboard](https://image.j-roque.com/posts/20251215-machinelearning/pdm_dashboard.png)
+
+---
+
 ## Machine Learning as a Feedback Loop
 
 Machine learning is not a one-time project.
