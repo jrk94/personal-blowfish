@@ -1,6 +1,6 @@
 ---
 title: "Understanding OPC-UA Redundancy"
-description: "WUnderstanding OPC-UA Redundancy"
+description: "Understanding OPC-UA Redundancy"
 summary: "Understanding OPC-UA Redundancy"
 categories: ["OPC-UA"]
 tags: ["Automation"]
