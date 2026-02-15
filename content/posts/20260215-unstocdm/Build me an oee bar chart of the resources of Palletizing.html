@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Palletizing OEE by Resource</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>body{background:#fff;font-family:Arial,sans-serif;padding:20px;margin:0}#container{max-width:1200px;margin:0 auto}.header{text-align:center;margin-bottom:30px}.header h1{color:#414141;margin:0 0 10px 0;font-size:28px}.header p{color:#8C8C8C;margin:0;font-size:14px}.chart-wrapper{position:relative;height:500px;background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}.legend{display:flex;justify-content:center;gap:20px;margin-top:20px;flex-wrap:wrap}.legend-item{display:flex;align-items:center;gap:8px;font-size:14px;color:#414141}.legend-color{width:20px;height:20px;border-radius:3px}</style>
+</head>
+<body>
+<div id="container">
+<div class="header">
+<h1>Palletizing Area - OEE by Resource</h1>
+<p>Overall Equipment Effectiveness (Last 7 Days) | ProveItBeverage Enterprise</p>
+</div>
+<div class="chart-wrapper">
+<canvas id="oeeChart"></canvas>
+</div>
+<div class="legend">
+<div class="legend-item"><div class="legend-color" style="background:#50B450"></div><span>Good (≥85%)</span></div>
+<div class="legend-item"><div class="legend-color" style="background:#C89F27"></div><span>Warning (66-84%)</span></div>
+<div class="legend-item"><div class="legend-color" style="background:#B83128"></div><span>Poor (<66%)</span></div>
+</div>
+</div>
+<script>
+(function(){
+const chartData={labels:['Plant1\nPallet01','Plant1\nPallet02','Plant1\nRobot','Plant1\nWorkstation','Plant1\nWrapper','Plant2\nPallet01','Plant2\nPallet02','Plant2\nRobot','Plant2\nWorkstation','Plant2\nWrapper','Plant3\nWorkstation'],datasets:[{label:'OEE %',data:[93.79,94.20,17.82,0.82,100.00,91.46,91.83,11.83,0.78,100.00,10.43],backgroundColor:['#50B450','#50B450','#B83128','#B83128','#50B450','#50B450','#50B450','#B83128','#B83128','#50B450','#B83128'],borderColor:['#50B450','#50B450','#B83128','#B83128','#50B450','#50B450','#50B450','#B83128','#B83128','#50B450','#B83128'],borderWidth:2}]};
+const config={type:'bar',data:chartData,options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:false},tooltip:{backgroundColor:'rgba(65,65,65,0.95)',padding:12,titleColor:'#fff',bodyColor:'#fff',borderColor:'#D8D8D8',borderWidth:1,callbacks:{label:function(context){return'OEE: '+context.parsed.y.toFixed(2)+'%'}}}},scales:{y:{beginAtZero:true,max:100,grid:{color:'#D8D8D8',drawBorder:false},ticks:{color:'#414141',callback:function(value){return value+'%'}},title:{display:true,text:'OEE Percentage',color:'#414141',font:{size:14,weight:'bold'}}},x:{grid:{display:false},ticks:{color:'#414141',font:{size:11}},title:{display:true,text:'Resource',color:'#414141',font:{size:14,weight:'bold'}}}}}};
+const ctx=document.getElementById('oeeChart').getContext('2d');
+new Chart(ctx,config);
+})();
+</script>
+</body>
+</html>

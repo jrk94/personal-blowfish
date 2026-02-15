@@ -1,0 +1,14 @@
+{{- $file := .Get "file" -}}
+{{- $height := .Get "height" | default "900" -}}
+{{- $width := .Get "width" | default "100%" -}}
+{{- $src := "" -}}
+{{- $path := path.Join "content" .Page.File.Dir $file -}}
+{{- if (fileExists $path) -}}
+  {{- $b64 := readFile $path | base64Encode -}}
+  {{- $src = printf "data:text/html;base64,%s" $b64 -}}
+{{- end -}}
+{{- if $src -}}
+  <iframe src="{{ $src | safeURL }}" style="width:{{ $width }};height:{{ $height }}px;border:0;" loading="lazy" referrerpolicy="no-referrer"></iframe>
+{{- else -}}
+  <div>Missing resource: {{ $file }}</div>
+{{- end -}}

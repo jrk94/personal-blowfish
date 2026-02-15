@@ -1,0 +1,8 @@
+<style>
+  .mermaid-wrap { display: flex; justify-content: center; }
+  .mermaid-wrap .mermaid { width: 100%; max-width: 960px; }
+  .mermaid-wrap .mermaid svg { width: 100%; height: auto; }
+</style>
+<div class="mermaid-wrap">
+  <pre class="not-prose mermaid" style="margin:0 auto;font-size:16px;">{{ .Inner | safeHTML }}</pre>
+</div>
