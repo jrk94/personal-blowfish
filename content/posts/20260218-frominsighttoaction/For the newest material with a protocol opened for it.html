@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paint Thickness Comparison</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{font-family:Arial,sans-serif;background:#fff;padding:20px;margin:0}
+.container{max-width:1400px;margin:0 auto}
+h1{color:#414141;font-size:24px;margin-bottom:10px}
+.summary{background:#F5F5F5;padding:20px;border-radius:8px;margin-bottom:30px}
+.summary h2{color:#0066A1;font-size:18px;margin:0 0 15px 0}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:15px;margin-bottom:20px}
+.info-card{background:#fff;padding:15px;border-radius:6px;border-left:4px solid #0066A1}
+.info-card h3{margin:0 0 8px 0;font-size:14px;color:#8C8C8C;font-weight:normal}
+.info-card p{margin:0;font-size:16px;color:#414141;font-weight:bold}
+.chart-container{background:#fff;padding:20px;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);margin-bottom:30px}
+.chart-container h3{color:#414141;font-size:16px;margin:0 0 20px 0}
+canvas{max-height:400px}
+.legend{display:flex;flex-wrap:wrap;gap:20px;margin-top:15px;font-size:13px}
+.legend-item{display:flex;align-items:center;gap:8px}
+.legend-color{width:16px;height:16px;border-radius:3px}
+.material-label{font-size:11px;color:#8C8C8C}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Paint Thickness Data Collection Analysis</h1>
+<div class="summary">
+<h2>Material with Protocol (Newest)</h2>
+<div class="info-grid">
+<div class="info-card">
+<h3>Material Name</h3>
+<p>Lot-RTU-FRAME W-313db8d5</p>
+</div>
+<div class="info-card">
+<h3>Product</h3>
+<p>RTU-FRAME W</p>
+</div>
+<div class="info-card">
+<h3>Protocol Opened</h3>
+<p>2026-02-13 13:55:28 UTC</p>
+</div>
+<div class="info-card">
+<h3>Instrument Used</h3>
+<p>Paint Thickness Gauge 0004</p>
+</div>
+<div class="info-card">
+<h3>Employee</h3>
+<p>Bob Operator</p>
+</div>
+<div class="info-card">
+<h3>Step</h3>
+<p>PLATE PAINTING</p>
+</div>
+</div>
+</div>
+<div class="chart-container">
+<h3>Average Paint Thickness Comparison</h3>
+<canvas id="avgChart"></canvas>
+<div class="legend">
+<div class="legend-item"><div class="legend-color" style="background:#B83128"></div><span>With Protocol (Lot-313db8d5)</span></div>
+<div class="legend-item"><div class="legend-color" style="background:#0066A1"></div><span>No Protocol (Lot-0b6a9f13)</span></div>
+<div class="legend-item"><div class="legend-color" style="background:#3CAAF0"></div><span>No Protocol (Lot-81c1267a)</span></div>
+<div class="legend-item"><div class="legend-color" style="background:#AAAAAA"></div><span>No Protocol (Lot-829baa9f)</span></div>
+</div>
+</div>
+<div class="chart-container">
+<h3>Detailed Paint Thickness by Location</h3>
+<canvas id="detailChart"></canvas>
+</div>
+<div class="summary">
+<h2>Comparison Materials (No Protocol)</h2>
+<div class="info-grid">
+<div class="info-card">
+<h3>Material 1</h3>
+<p>Lot-RTU-FRAME W-0b6a9f13<br><span class="material-label">Instrument: Paint Thickness Gauge 0001 | Employee: John Operator</span></p>
+</div>
+<div class="info-card">
+<h3>Material 2</h3>
+<p>Lot-RTU-FRAME W-81c1267a<br><span class="material-label">Instrument: Paint Thickness Gauge 0001 | Employee: Tim Operator</span></p>
+</div>
+<div class="info-card">
+<h3>Material 3</h3>
+<p>Lot-RTU-FRAME W-829baa9f<br><span class="material-label">Instrument: Paint Thickness Gauge 0001 | Employee: John Operator</span></p>
+</div>
+</div>
+</div>
+</div>
+<script>
+(function(){
+const avgData={labels:['Protocol Material','Material 1 (No Protocol)','Material 2 (No Protocol)','Material 3 (No Protocol)'],datasets:[{label:'Average Paint Thickness',data:[73.22,119.58,121.868,119.43],backgroundColor:['rgba(184,49,40,0.7)','rgba(0,102,161,0.7)','rgba(60,170,240,0.7)','rgba(170,170,170,0.7)'],borderColor:['#B83128','#0066A1','#3CAAF0','#AAAAAA'],borderWidth:2}]};
+const avgCtx=document.getElementById('avgChart').getContext('2d');
+new Chart(avgCtx,{type:'bar',data:avgData,options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(context){return context.parsed.y.toFixed(2)+' μm'}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'Paint Thickness (μm)',color:'#414141'},grid:{color:'#D8D8D8',borderDash:[5,5]}},x:{grid:{display:false}}}}});
+const detailData={labels:['Top Edge','Bottom Edge','Left Side','Right Side','Center'],datasets:[{label:'With Protocol (Lot-313db8d5)',data:[74.89,79.25,78.35,60.91,72.7],borderColor:'#B83128',backgroundColor:'rgba(184,49,40,0.1)',borderWidth:2,tension:0.3},{label:'No Protocol (Lot-0b6a9f13)',data:[123.44,121.6,115.76,119.43,117.67],borderColor:'#0066A1',backgroundColor:'rgba(0,102,161,0.1)',borderWidth:2,tension:0.3},{label:'No Protocol (Lot-81c1267a)',data:[117.95,121.98,124.24,123.91,121.26],borderColor:'#3CAAF0',backgroundColor:'rgba(60,170,240,0.1)',borderWidth:2,tension:0.3},{label:'No Protocol (Lot-829baa9f)',data:[115.5,117.88,120.83,119.29,123.65],borderColor:'#AAAAAA',backgroundColor:'rgba(170,170,170,0.1)',borderWidth:2,tension:0.3}]};
+const detailCtx=document.getElementById('detailChart').getContext('2d');
+new Chart(detailCtx,{type:'line',data:detailData,options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:true,position:'bottom'},tooltip:{callbacks:{label:function(context){return context.dataset.label+': '+context.parsed.y.toFixed(2)+' μm'}}}},scales:{y:{beginAtZero:true,title:{display:true,text:'Paint Thickness (μm)',color:'#414141'},grid:{color:'#D8D8D8',borderDash:[5,5]}},x:{grid:{color:'#D8D8D8',borderDash:[5,5]}}}}});
+})();
+</script>
+</body>
+</html>
