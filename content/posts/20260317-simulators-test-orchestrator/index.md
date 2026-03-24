@@ -16,13 +16,19 @@ One of the hardest parts of an MES project is dealing with third-party integrati
 
 Over the years, different industries have created different interfaces — some are open standards and protocols, others are vendor-specific.
 
-To address these integration challenges, Critical Manufacturing created the Connect IoT application.
+Critical Manufacturing created the Connect IoT application to be a middleware that is able to interface with external systems and translate them into the MES. This seems trivial but it can entail complex integration flows, with different levels of MES or machine coupling.
 
-Over time we found it very cumbersome to build tests that covered the full path from machine to MES and back, so we developed a testing tool to speed up test development. In a previous blog post we already covered this tool in its typical use case: [Test Orchestrator Tests](https://j-roque.com/posts/20250828-iot-mtconnectdriver-ii/).
+Having a rich test surface is paramount in order to create reliable integration flows. This quickly became hard task as it often times required bespoke test tooling in order to emulate machine behaviors and a dedicated MES System. We decided to completely change the paradigm and create a common framework that enables not only the machine emulation across all communication protocols, but also to create mocks of the MES and all other dependencies. This solved another issue, which was the time it took to run test suites.
 
-For this post I want to explore a different use case.
+In a previous blog post we already covered this tool in its typical use case: [Test Orchestrator Tests](https://j-roque.com/posts/20250828-iot-mtconnectdriver-ii/).
 
-The hard part of these integrations is not just implementing and automating them, but visualizing and communicating them to all stakeholders. In the past this was left as a best effort or an afterthought. In reality, creating small and simple UIs that let stakeholders interact with and validate the solution is crucial — it enables the transition from passive users to active solution owners.
+For this post I want to explore a different use case. Where we use the same tool, not just for automatic testing but to create demo scenarios and testing applications.
+
+One of the pain points we found over the years is how we can communicate the complex processes and assumptions running in these integrations to all stakeholders. Their feedback is crucial, but often times the problem is framed as a very technical one, when it's the complete opposite. It's common that the machine integration is the one driving the shopfloor and the one dictating the process constraints.
+
+In the past creating these visualizations and helper tools was a big time sink and was left to the end of the process. This did not enable the implementation to accompany the agile sprint, demo, test and validation and problems were being found late in the project lifecycle. Now, we are going to show how easy it is to create and tailor them. Creating small and simple applications that let stakeholders interact with and validate the solution is crucial. 
+
+> It enables the transition from passive users to active solution owners.
 
 ## Why Use the Test Orchestrator
 
