@@ -231,7 +231,7 @@ As data flows in:
 
 We can see how a simple change of Resource State generates a CDM event with all the contextual information.
 
-![CDM Event](https://image.j-roque.com/posts/20251215-machinelearning/CDMEvent.gif)
+![CDM Event](https://image.j-roque.com/posts/20251215-machinelearning/CDMEvent_fixed.gif)
 
 In the MES the user can create their own datasets or use the one's already provided by the system to train and use their machine learning models.
 
@@ -274,9 +274,9 @@ Using supervised learning:
 3. Normalize and validate automatically
 4. Deploy the model inside the MES
 
-![Create ML Model](https://image.j-roque.com/posts/20251215-machinelearning/CreateMLModel.gif)
+![Create ML Model](https://image.j-roque.com/posts/20251215-machinelearning/CreateMLModel_fixed.gif)
 
-![Train ML Model](https://image.j-roque.com/posts/20251215-machinelearning/TrainMLModel.gif)
+![Train ML Model](https://image.j-roque.com/posts/20251215-machinelearning/TrainMLModel_fixed.gif)
 
 No scripts. No notebooks. No external platforms.
 
@@ -295,9 +295,9 @@ As telemetry is ingested, in the Reflow Oven Integration:
 
 Defects are no longer discovered only at inspection — they are **anticipated**.
 
-![ML Run](https://image.j-roque.com/posts/20251215-machinelearning/MLRun.gif)
+![ML Run](https://image.j-roque.com/posts/20251215-machinelearning/MLRun_fixed.gif)
 
-![ML Run Notification](https://image.j-roque.com/posts/20251215-machinelearning/MLRun.gif)
+![ML Run Notification](https://image.j-roque.com/posts/20251215-machinelearning/MLRunDefect.gif)
 
 ---
 
