@@ -86,3 +86,8 @@
   name = "Authors"
   pageRef = "authors"
   weight = 30
+
+[[footer]]
+  name = "RSS"
+  url = "/index.xml"
+  weight = 40
