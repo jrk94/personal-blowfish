@@ -2,7 +2,7 @@
 title: "What is an MES?"
 description: "What is an MES?"
 summary: "What is an MES?"
-categories: ["Basics"]
+categories: ["Fundamentals"]
 tags: ["MES"]
 date: 2025-12-09
 draft: false
@@ -82,11 +82,11 @@ It senses everything. It has `real-time awareness of everything that is happenin
 
 ### Reflexes - Makes Immediate Decisions
 
-Your brain is `continuously managing your body`, either keeping the temperature stable, regulating hormones, killing cells with defects or simply breathing, all of this are reflex actions that we don't even think about but are key. Can you even imagine going through your day having to thing every few seconds to breath. This would consume so much mental power that you would be paralyzed, just trying to survive.
+Your brain is `continuously managing your body`, either keeping the temperature stable, regulating hormones, killing cells with defects or simply breathing, all of this are reflex actions that we don't even think about but are key. Can you imagine going through your day having to think, every few seconds, to breath? This would consume so much mental power that you would be paralyzed, just trying to survive.
 
 The MES is just like the human body, it automatically quarantines materials with defects, it rejects bad parts, provides machines and operators with recipe and job instructions and automatically routes all the materials you are producing in your shopfloor. 
 
-Can you imagine managing a shopfloor where all of these actions are manual actions and accurately decide at every particular instance. How would you have time to think about improving? You would waste your time trying to keep breathing.
+Can you imagine managing a shopfloor where all of these actions are manual actions and accurately decide at every particular instance? How would you have time to think about improving? You would waste all your time trying to keep breathing.
 
 ### Muscle Actions - Execution & Coordination
 

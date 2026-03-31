@@ -54,3 +54,14 @@
 td {
     vertical-align: middle !important;
 }
+
+/* Blowfish: widen the single post content column */
+article .article-content {
+    max-width: 90ch;
+    /* try 90–110ch */
+}
+
+/* Optional: match the header width too */
+article #single_header {
+    max-width: 90ch;
+}

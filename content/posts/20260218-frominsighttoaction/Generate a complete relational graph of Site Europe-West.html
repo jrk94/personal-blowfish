@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Europe-West Relational Graph</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+body{margin:0;padding:20px;font-family:'Open Sans',sans-serif;background:#fff}
+#graph{width:100%;height:95vh;border:1px solid #D8D8D8;background:#F5F5F5}
+.node{cursor:pointer;stroke:#fff;stroke-width:2px}
+.node-site{fill:#0066A1}
+.node-facility{fill:#E15532}
+.node-area{fill:#50B450}
+.node-resource{fill:#3CAAF0}
+.node-flow{fill:#C89F27}
+.node-step{fill:#414141}
+.link{stroke:#AAAAAA;stroke-opacity:0.4;stroke-width:1.5px;fill:none}
+.node-label{font-size:12px;fill:rgba(0,0,0,0.95);pointer-events:none;text-anchor:middle;font-family:'Open Sans',sans-serif}
+.legend{position:absolute;top:30px;right:30px;background:rgba(255,255,255,0.95);padding:15px;border:1px solid #D8D8D8;border-radius:4px;font-size:14px;min-width:200px}
+.legend-title{font-size:16px;font-weight:600;margin-bottom:12px;color:rgba(0,0,0,0.95)}
+.legend-item{display:flex;align-items:center;margin:8px 0;cursor:pointer;user-select:none}
+.legend-item:hover{background:#F5F5F5;padding:2px 4px;margin:8px -4px;border-radius:3px}
+.legend-checkbox{width:18px;height:18px;margin-right:8px;cursor:pointer}
+.legend-color{width:20px;height:20px;margin-right:10px;border-radius:3px}
+.legend-label{flex:1}
+.node-hidden{opacity:0.1}
+.link-hidden{opacity:0.05}
+h1{font-size:36px;font-weight:400;color:rgba(0,0,0,0.95);margin:0 0 10px 0}
+.controls{margin-top:15px;padding-top:15px;border-top:1px solid #D8D8D8}
+.control-btn{background:#0066A1;color:#fff;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;font-size:12px;font-family:'Open Sans',sans-serif;width:100%;margin-top:5px}
+.control-btn:hover{background:#004d7a}
+</style>
+</head>
+<body>
+<h1>Europe-West Site Relational Graph</h1>
+<div class="legend">
+<div class="legend-title">Filter by Type</div>
+<label class="legend-item">
+<input type="checkbox" class="legend-checkbox" data-type="site" checked>
+<div class="legend-color" style="background:#0066A1"></div>
+<span class="legend-label">Site</span>
+</label>
+<label class="legend-item">
+<input type="checkbox" class="legend-checkbox" data-type="facility" checked>
+<div class="legend-color" style="background:#E15532"></div>
+<span class="legend-label">Facility</span>
+</label>
+<label class="legend-item">
+<input type="checkbox" class="legend-checkbox" data-type="area" checked>
+<div class="legend-color" style="background:#50B450"></div>
+<span class="legend-label">Area</span>
+</label>
+<label class="legend-item">
+<input type="checkbox" class="legend-checkbox" data-type="resource" checked>
+<div class="legend-color" style="background:#3CAAF0"></div>
+<span class="legend-label">Resource</span>
+</label>
+<label class="legend-item">
+<input type="checkbox" class="legend-checkbox" data-type="flow" checked>
+<div class="legend-color" style="background:#C89F27"></div>
+<span class="legend-label">Flow</span>
+</label>
+<label class="legend-item">
+<input type="checkbox" class="legend-checkbox" data-type="step" checked>
+<div class="legend-color" style="background:#414141"></div>
+<span class="legend-label">Step</span>
+</label>
+<div class="controls">
+<button class="control-btn" id="selectAll">Select All</button>
+<button class="control-btn" id="deselectAll">Deselect All</button>
+</div>
+</div>
+<svg id="graph"></svg>
+<script>
+(function(){
+const rawData=[{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"BEND#01","Flow_Name":"Fabrication_Metal Plate","Step_Name":"BEND"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"COATING","Flow_Name":"Fabrication_Metal Plate","Step_Name":"COATING"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"COIL BEND#01","Flow_Name":"Fabrication_Coil - Copper","Step_Name":"COIL BEND"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"COIL TREATMENT","Flow_Name":"Fabrication_Coil - Copper","Step_Name":"COIL TREATMENT"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"COLORING#01","Flow_Name":"Fabrication_Metal Plate","Step_Name":"PLATE COLORING"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"COMPRESSOR TUB BRAZE","Flow_Name":"Fabrication_Coil - Copper","Step_Name":"COMPRESSOR TUB BRAZE"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"COPPER BEND#01","Flow_Name":"Fabrication_Coil - Copper","Step_Name":"COPPER BEND"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"DOOR PREP","Flow_Name":"Fabrication_Electric","Step_Name":"DOOR PREP"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"ESD Feeder","Flow_Name":"Kanban Fabrication","Step_Name":"Kanban Fabrication"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"FILTER PREP","Flow_Name":"Fabrication_Electric","Step_Name":"FILTER PREP"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"FOAM","Flow_Name":"Fabrication_Foam","Step_Name":"FOAM"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"FOAM PREP","Flow_Name":"Fabrication_Foam","Step_Name":"FOAM PREP"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Foam Feeder","Flow_Name":"Kanban Fabrication","Step_Name":"Kanban Fabrication"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Galv Sheet Feeder#01","Flow_Name":"Kanban Fabrication","Step_Name":"Kanban Fabrication"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"INDOOR BRAZE","Flow_Name":"Fabrication_Coil - Copper","Step_Name":"INDOOR BRAZE"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Ink Feeder","Flow_Name":"Kanban Fabrication","Step_Name":"Kanban Fabrication"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Ink Feeder color","Flow_Name":"Kanban Fabrication","Step_Name":"Kanban Fabrication"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"MAIN BOARD","Flow_Name":"Fabrication_Electric","Step_Name":"MAIN BOARD"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Metal Burrs Feeder#01","Flow_Name":"Flow Wasted Material","Step_Name":"Store Wasted Material"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"OUTDOOR BRAZE","Flow_Name":"Fabrication_Coil - Copper","Step_Name":"OUTDOOR BRAZE"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"PAINTING#01","Flow_Name":"Fabrication_Metal Plate","Step_Name":"PLATE PAINTING"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"PUNCH#01","Flow_Name":"Fabrication_Metal Plate","Step_Name":"PUNCH"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Rework Station 1","Flow_Name":"RWK_Metal Plate","Step_Name":"RwPolish"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"Rework Station 2","Flow_Name":"RWK_Metal Plate","Step_Name":"RwInspection"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":"STAGING MB","Flow_Name":"Fabrication_Electric","Step_Name":"STAGING MB"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":null,"Flow_Name":"Durables Flow","Step_Name":"Kanban Durables"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Fabrication","Resource_Name":null,"Flow_Name":"Fabrication_Coil - Copper","Step_Name":"START COIL - COPPER"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY0","Flow_Name":"Final Assembly","Step_Name":"BASE ASM"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY1","Flow_Name":"Final Assembly","Step_Name":"HEAT MOD COMP TUB"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY1","Flow_Name":"Final Assembly","Step_Name":"INSTALL OD COIL TUBES"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY2","Flow_Name":"Final Assembly","Step_Name":"APPLY FOAM"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY2","Flow_Name":"Final Assembly","Step_Name":"FINAL WIRING"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY2","Flow_Name":"Final Assembly","Step_Name":"NITROGEN EVAC CHARGE"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"BAY3","Flow_Name":"Final Assembly","Step_Name":"INSTALL COVERS DOORS FANS AND ROOF"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"CLEANUP AND INSPECTION","Flow_Name":"Final Assembly","Step_Name":"CLEANUP AND INSPECTION"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"Oil Feeder","Flow_Name":"Kanban Final Assembly","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"RTU PACKING","Flow_Name":"Final Assembly","Step_Name":"RTU PACKING"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"RTU PACKING feeder","Flow_Name":"Kanban Final Assembly","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":"Screws Feeder","Flow_Name":"Kanban Final Assembly","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":null,"Flow_Name":"Fabrication_Coil - Copper","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":null,"Flow_Name":"Fabrication_Electric","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":null,"Flow_Name":"Fabrication_Foam","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":null,"Flow_Name":"Fabrication_Metal Plate","Step_Name":"Kanban Final Assembly"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":null,"Flow_Name":"Final Assembly","Step_Name":"Final Assembly Wait for Packing"},{"Site_Name":"Europe-West","Facility_Name":"Production InduTech","Area_Name":"Final Assembly","Resource_Name":null,"Flow_Name":"Final Assembly","Step_Name":"SHIPPING WH INDUTECH"},{"Site_Name":"Europe-West","Facility_Name":"Warehouse InduTech","Area_Name":"RTU Packing","Resource_Name":"RTU FINAL PACKAGING","Flow_Name":"Final Assembly","Step_Name":"RTU FINAL PACKAGING"},{"Site_Name":"Europe-West","Facility_Name":"Warehouse InduTech","Area_Name":"RTU Packing","Resource_Name":null,"Flow_Name":"Final Assembly","Step_Name":"SHIPPING FINAL CUSTOMER"},{"Site_Name":"Europe-West","Facility_Name":"Warehouse InduTech","Area_Name":"WAREHOUSE InduTech","Resource_Name":null,"Flow_Name":"Store InduTech Warehouse","Step_Name":"Incoming InduTech"},{"Site_Name":"Europe-West","Facility_Name":"Warehouse InduTech","Area_Name":"WAREHOUSE InduTech","Resource_Name":null,"Flow_Name":"Store InduTech Warehouse","Step_Name":"Reception InduTech"},{"Site_Name":"Europe-West","Facility_Name":"Warehouse InduTech","Area_Name":"WAREHOUSE InduTech","Resource_Name":null,"Flow_Name":"Store InduTech Warehouse","Step_Name":"Store InduTech Warehouse"}];
+
+const nodeMap=new Map();
+const graphLinks=[];
+
+function getOrCreateNode(id,label,type){
+if(!nodeMap.has(id)){
+nodeMap.set(id,{id:id,label:label,type:type});
+}
+return nodeMap.get(id);
+}
+
+rawData.forEach(row=>{
+const siteNode=getOrCreateNode(`site_${row.Site_Name}`,row.Site_Name,'site');
+const facilityNode=getOrCreateNode(`facility_${row.Facility_Name}`,row.Facility_Name,'facility');
+const areaNode=getOrCreateNode(`area_${row.Area_Name}`,row.Area_Name,'area');
+const flowNode=getOrCreateNode(`flow_${row.Flow_Name}`,row.Flow_Name,'flow');
+const stepNode=getOrCreateNode(`step_${row.Step_Name}`,row.Step_Name,'step');
+
+if(!graphLinks.find(l=>l.source===siteNode.id&&l.target===facilityNode.id)){
+graphLinks.push({source:siteNode.id,target:facilityNode.id});
+}
+if(!graphLinks.find(l=>l.source===facilityNode.id&&l.target===areaNode.id)){
+graphLinks.push({source:facilityNode.id,target:areaNode.id});
+}
+if(!graphLinks.find(l=>l.source===areaNode.id&&l.target===flowNode.id)){
+graphLinks.push({source:areaNode.id,target:flowNode.id});
+}
+if(!graphLinks.find(l=>l.source===flowNode.id&&l.target===stepNode.id)){
+graphLinks.push({source:flowNode.id,target:stepNode.id});
+}
+
+if(row.Resource_Name){
+const resourceNode=getOrCreateNode(`resource_${row.Resource_Name}`,row.Resource_Name,'resource');
+if(!graphLinks.find(l=>l.source===areaNode.id&&l.target===resourceNode.id)){
+graphLinks.push({source:areaNode.id,target:resourceNode.id});
+}
+if(!graphLinks.find(l=>l.source===resourceNode.id&&l.target===stepNode.id)){
+graphLinks.push({source:resourceNode.id,target:stepNode.id});
+}
+}
+});
+
+const graphNodes=Array.from(nodeMap.values());
+
+const svgElement=d3.select('#graph');
+const containerWidth=document.getElementById('graph').clientWidth;
+const containerHeight=document.getElementById('graph').clientHeight;
+
+svgElement.attr('width',containerWidth).attr('height',containerHeight);
+
+const mainGroup=svgElement.append('g');
+
+const zoomBehavior=d3.zoom().scaleExtent([0.1,4]).on('zoom',(event)=>{
+mainGroup.attr('transform',event.transform);
+});
+
+svgElement.call(zoomBehavior);
+
+const forceSimulation=d3.forceSimulation(graphNodes)
+.force('link',d3.forceLink(graphLinks).id(d=>d.id).distance(100))
+.force('charge',d3.forceManyBody().strength(-400))
+.force('center',d3.forceCenter(containerWidth/2,containerHeight/2))
+.force('collision',d3.forceCollide().radius(30));
+
+const linkElements=mainGroup.append('g')
+.selectAll('line')
+.data(graphLinks)
+.enter().append('line')
+.attr('class','link');
+
+const nodeElements=mainGroup.append('g')
+.selectAll('circle')
+.data(graphNodes)
+.enter().append('circle')
+.attr('class',d=>`node node-${d.type}`)
+.attr('r',d=>d.type==='site'?20:d.type==='facility'?16:d.type==='area'?14:d.type==='flow'?12:d.type==='resource'?10:8)
+.call(d3.drag()
+.on('start',(event,d)=>{
+if(!event.active)forceSimulation.alphaTarget(0.3).restart();
+d.fx=d.x;
+d.fy=d.y;
+})
+.on('drag',(event,d)=>{
+d.fx=event.x;
+d.fy=event.y;
+})
+.on('end',(event,d)=>{
+if(!event.active)forceSimulation.alphaTarget(0);
+d.fx=null;
+d.fy=null;
+}));
+
+const labelElements=mainGroup.append('g')
+.selectAll('text')
+.data(graphNodes)
+.enter().append('text')
+.attr('class','node-label')
+.attr('dy',d=>d.type==='site'?28:d.type==='facility'?24:d.type==='area'?22:d.type==='flow'?20:d.type==='resource'?18:16)
+.text(d=>d.label);
+
+forceSimulation.on('tick',()=>{
+linkElements
+.attr('x1',d=>d.source.x)
+.attr('y1',d=>d.source.y)
+.attr('x2',d=>d.target.x)
+.attr('y2',d=>d.target.y);
+
+nodeElements
+.attr('cx',d=>d.x)
+.attr('cy',d=>d.y);
+
+labelElements
+.attr('x',d=>d.x)
+.attr('y',d=>d.y);
+});
+
+const activeTypes=new Set(['site','facility','area','resource','flow','step']);
+
+function updateVisibility(){
+nodeElements.classed('node-hidden',d=>!activeTypes.has(d.type));
+labelElements.classed('node-hidden',d=>!activeTypes.has(d.type));
+linkElements.classed('link-hidden',d=>{
+const sourceNode=graphNodes.find(n=>n.id===d.source.id);
+const targetNode=graphNodes.find(n=>n.id===d.target.id);
+return !activeTypes.has(sourceNode.type)||!activeTypes.has(targetNode.type);
+});
+}
+
+document.querySelectorAll('.legend-checkbox').forEach(checkbox=>{
+checkbox.addEventListener('change',function(){
+const nodeType=this.getAttribute('data-type');
+if(this.checked){
+activeTypes.add(nodeType);
+}else{
+activeTypes.delete(nodeType);
+}
+updateVisibility();
+});
+});
+
+document.getElementById('selectAll').addEventListener('click',()=>{
+document.querySelectorAll('.legend-checkbox').forEach(cb=>{
+cb.checked=true;
+activeTypes.add(cb.getAttribute('data-type'));
+});
+updateVisibility();
+});
+
+document.getElementById('deselectAll').addEventListener('click',()=>{
+document.querySelectorAll('.legend-checkbox').forEach(cb=>{
+cb.checked=false;
+activeTypes.delete(cb.getAttribute('data-type'));
+});
+updateVisibility();
+});
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paint Thickness Comparison - Protocol Materials</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: white;
+            padding: 30px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #414141;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #8C8C8C;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: linear-gradient(135deg, #F5F5F5 0%, #FFFFFF 100%);
+            border-left: 4px solid #0066A1;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .card.newest {
+            border-left-color: #50B450;
+            background: linear-gradient(135deg, #f0f9f0 0%, #FFFFFF 100%);
+        }
+        .card h3 {
+            margin: 0 0 15px 0;
+            color: #414141;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #E0E0E0;
+        }
+        .card .stat-row:last-child {
+            border-bottom: none;
+        }
+        .card .label {
+            font-size: 12px;
+            color: #8C8C8C;
+        }
+        .card .value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #414141;
+        }
+        .card .highlight {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066A1;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .chart-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 1200px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        canvas {
+            max-height: 450px;
+        }
+        .insight-box {
+            background: #E8F4F8;
+            border-left: 4px solid #0066A1;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+        .insight-box h3 {
+            margin: 0 0 10px 0;
+            color: #0066A1;
+            font-size: 16px;
+        }
+        .insight-box ul {
+            margin: 10px 0;
+            padding-left: 20px;
+            color: #414141;
+        }
+        .insight-box li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Paint Thickness Data Collection - Materials with Active Protocols</h1>
+        <div class="subtitle">RTU-LATERAL W Product | All measurements by Bob Operator using Paint Thickness Gauge 0004</div>
+        
+        <div class="insight-box">
+            <h3>📊 Key Findings</h3>
+            <ul>
+                <li><strong>Consistency Across Protocol Materials:</strong> All 5 materials with active protocols show similar average paint thickness values (68.4 - 71.2 μm), demonstrating excellent process control.</li>
+                <li><strong>Standard Deviation:</strong> All materials maintain low variability (4.6 - 5.8 μm), indicating consistent quality.</li>
+                <li><strong>Same Operator & Instrument:</strong> All measurements performed by Bob Operator using Paint Thickness Gauge 0004, eliminating operator and equipment variability.</li>
+                <li><strong>Protocol Effectiveness:</strong> Compared to non-protocol materials (avg 85.1 μm), protocol-controlled materials are approximately 18% thinner and more consistent.</li>
+            </ul>
+        </div>
+
+        <div class="summary-cards">
+            <div class="card newest">
+                <h3>🆕 Material 1 (Newest)</h3>
+                <div class="highlight">70.09 μm</div>
+                <div class="stat-row">
+                    <span class="label">Range</span>
+                    <span class="value">60.36 - 79.17 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Std Dev</span>
+                    <span class="value">5.66 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Readings</span>
+                    <span class="value">15</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Material ID</span>
+                    <span class="value" style="font-size: 10px;">...a29c1e14</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Material 2</h3>
+                <div class="highlight">70.05 μm</div>
+                <div class="stat-row">
+                    <span class="label">Range</span>
+                    <span class="value">60.24 - 79.00 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Std Dev</span>
+                    <span class="value">5.68 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Readings</span>
+                    <span class="value">15</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Material ID</span>
+                    <span class="value" style="font-size: 10px;">...4d6cea83</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Material 3</h3>
+                <div class="highlight">69.00 μm</div>
+                <div class="stat-row">
+                    <span class="label">Range</span>
+                    <span class="value">61.12 - 78.66 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Std Dev</span>
+                    <span class="value">4.65 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Readings</span>
+                    <span class="value">15</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Material ID</span>
+                    <span class="value" style="font-size: 10px;">...4a8fc31e</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Material 4</h3>
+                <div class="highlight">68.43 μm</div>
+                <div class="stat-row">
+                    <span class="label">Range</span>
+                    <span class="value">60.71 - 76.68 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Std Dev</span>
+                    <span class="value">4.93 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Readings</span>
+                    <span class="value">15</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Material ID</span>
+                    <span class="value" style="font-size: 10px;">...44235c1c</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Material 5</h3>
+                <div class="highlight">71.20 μm</div>
+                <div class="stat-row">
+                    <span class="label">Range</span>
+                    <span class="value">61.65 - 78.18 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Std Dev</span>
+                    <span class="value">5.83 μm</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Readings</span>
+                    <span class="value">15</span>
+                </div>
+                <div class="stat-row">
+                    <span class="label">Material ID</span>
+                    <span class="value" style="font-size: 10px;">...89f7bc07</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-container">
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="boxPlotChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        // Color palette
+        const colors = ['#50B450', '#0066A1', '#3CAAF0', '#E15532', '#AAAAAA'];
+        
+        // Data for all materials
+        const materialsData = {
+            'Material 1 (Newest)': {
+                bottomEdge: 70.87,
+                center: 64.92,
+                leftSide: 69.65,
+                rightSide: 72.27,
+                topEdge: 72.73,
+                overall: 70.09,
+                stdDev: 5.66,
+                min: 60.36,
+                max: 79.17
+            },
+            'Material 2': {
+                bottomEdge: 71.88,
+                center: 69.88,
+                leftSide: 62.94,
+                rightSide: 75.91,
+                topEdge: 69.64,
+                overall: 70.05,
+                stdDev: 5.68,
+                min: 60.24,
+                max: 79.00
+            },
+            'Material 3': {
+                bottomEdge: 69.13,
+                center: 72.07,
+                leftSide: 67.62,
+                rightSide: 69.66,
+                topEdge: 66.54,
+                overall: 69.00,
+                stdDev: 4.65,
+                min: 61.12,
+                max: 78.66
+            },
+            'Material 4': {
+                bottomEdge: 68.56,
+                center: 69.14,
+                leftSide: 68.42,
+                rightSide: 68.55,
+                topEdge: 67.50,
+                overall: 68.43,
+                stdDev: 4.93,
+                min: 60.71,
+                max: 76.68
+            },
+            'Material 5': {
+                bottomEdge: 74.62,
+                center: 75.90,
+                leftSide: 64.89,
+                rightSide: 74.15,
+                topEdge: 66.47,
+                overall: 71.20,
+                stdDev: 5.83,
+                min: 61.65,
+                max: 78.18
+            }
+        };
+
+        // Radar Chart
+        const radarContext = document.getElementById('radarChart').getContext('2d');
+        const radarDatasets = Object.keys(materialsData).map((material, index) => ({
+            label: material,
+            data: [
+                materialsData[material].bottomEdge,
+                materialsData[material].center,
+                materialsData[material].leftSide,
+                materialsData[material].rightSide,
+                materialsData[material].topEdge
+            ],
+            backgroundColor: colors[index] + '20',
+            borderColor: colors[index],
+            borderWidth: 2,
+            pointBackgroundColor: colors[index],
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6
+        }));
+
+        new Chart(radarContext, {
+            type: 'radar',
+            data: {
+                labels: ['Bottom Edge', 'Center', 'Left Side', 'Right Side', 'Top Edge'],
+                datasets: radarDatasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Paint Thickness by Measurement Location',
+                        font: { size: 16, weight: 'bold' },
+                        color: '#414141',
+                        padding: 20
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 11 },
+                            color: '#414141',
+                            padding: 10,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(65, 65, 65, 0.95)',
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + ' μm';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        min: 0,
+                        max: 80,
+                        ticks: {
+                            stepSize: 20,
+                            font: { size: 11 },
+                            color: '#8C8C8C',
+                            callback: function(value) {
+                                return value + ' μm';
+                            }
+                        },
+                        grid: {
+                            color: '#D8D8D8'
+                        },
+                        pointLabels: {
+                            font: { size: 12, weight: '600' },
+                            color: '#414141'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bar Chart - Overall Average Comparison
+        const barContext = document.getElementById('barChart').getContext('2d');
+        new Chart(barContext, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(materialsData),
+                datasets: [{
+                    label: 'Overall Average Paint Thickness',
+                    data: Object.values(materialsData).map(m => m.overall),
+                    backgroundColor: colors.map(c => c + '80'),
+                    borderColor: colors,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Overall Average Paint Thickness Comparison',
+                        font: { size: 16, weight: 'bold' },
+                        color: '#414141',
+                        padding: 20
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(65, 65, 65, 0.95)',
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return 'Average: ' + context.parsed.y.toFixed(2) + ' μm';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 80,
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#8C8C8C',
+                            callback: function(value) {
+                                return value + ' μm';
+                            }
+                        },
+                        grid: {
+                            color: '#D8D8D8',
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#414141'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Box Plot Style Chart (using bar chart with error bars simulation)
+        const boxContext = document.getElementById('boxPlotChart').getContext('2d');
+        new Chart(boxContext, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(materialsData),
+                datasets: [
+                    {
+                        label: 'Average',
+                        data: Object.values(materialsData).map(m => m.overall),
+                        backgroundColor: colors.map(c => c + '60'),
+                        borderColor: colors,
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Min Value',
+                        data: Object.values(materialsData).map(m => m.min),
+                        backgroundColor: 'transparent',
+                        borderColor: '#B83128',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        type: 'line',
+                        pointStyle: 'triangle',
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Max Value',
+                        data: Object.values(materialsData).map(m => m.max),
+                        backgroundColor: 'transparent',
+                        borderColor: '#50B450',
+                        borderWidth: 2,
+                        borderDash: [5, 5],
+                        type: 'line',
+                        pointStyle: 'triangle',
+                        pointRotation: 180,
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Paint Thickness Range Analysis (Min, Average, Max)',
+                        font: { size: 16, weight: 'bold' },
+                        color: '#414141',
+                        padding: 20
+                    },
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 12 },
+                            color: '#414141',
+                            padding: 15,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(65, 65, 65, 0.95)',
+                        padding: 12,
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + ' μm';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 85,
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#8C8C8C',
+                            callback: function(value) {
+                                return value + ' μm';
+                            }
+                        },
+                        grid: {
+                            color: '#D8D8D8',
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#414141'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    })();
+    </script>
+</body>
+</html>
