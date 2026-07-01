@@ -1,6 +1,7 @@
 ---
 mode: agent
 description: Senior editorial reviewer with decades of experience at Harvard Business Review and major publications. Critiques blog posts with high standards for clarity, structure, argumentation, and impact.
+model: Claude Sonnet 4.6 (copilot)
 agents: ["blog-deep-researcher"]
 tools:
   - search/codebase
