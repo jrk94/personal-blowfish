@@ -10,6 +10,8 @@ authors:
   - Roque
 ---
 
+The world of manufacturing is not just complex, it's highly dynamic. This means your software has to be optimized, not just for performance but also for dealing with change.
+
 This is why CM MES UI is not a closed system. The platform exposes deliberate extension points. In this post we will show two patterns, injecting our own wizard steps and entity pages by just leveraging metadata.
 
 ---
@@ -22,7 +24,7 @@ This is why CM MES UI is not a closed system. The platform exposes deliberate ex
 
 In the [previous post](https://j-roque.com/posts/20260630-ephemeralcontroller/) we built an ephemeral OPC-UA controller that browses a server's node tree on demand.
 
-The back-end is done. Now we need to surface it in the UI:
+The back-end is done. Now, let's give our user the ability to use, with just a click of a button:
 
 1. A **new wizard step** inside the existing **Automation Driver** creation wizard — so users can browse the OPC-UA server and auto-populate properties, events and commands without typing node IDs by hand.
 2. A **new entity page tab** on the `AutomationControllerInstance` entity — so operators and engineers can open a live OPC-UA browser directly from the instance page while the controller is running.
@@ -488,6 +490,6 @@ The page component uses it with `[showDataType]="false"` on the browse panel to 
 
 ## Final Thoughts
 
-The two patterns shown here — `flexComponents` for injecting into existing views, `entityTypes` for attaching new views to entities — cover the vast majority of real customization scenarios. The OPC-UA browser crosses wizard context injection, conditional step visibility, entity attribute gating, lazy loading, and shared component reuse, with one goal: make life simpler for the end-user.
+The two patterns shown here — `flexComponents` for injecting into existing views, `entityTypes` for attaching new views to entities, show how simple and extensible the UI is. The OPC-UA browser crosses wizard context injection, conditional step visibility, entity attribute gating, lazy loading, and shared component reuse, with one goal: make life simpler for the end-user.
 
 The patterns themselves are protocol-agnostic. Replace the OPC-UA message bus calls with anything else and the injection mechanics remain identical. 

@@ -10,7 +10,7 @@ authors:
   - Roque
 ---
 
-There's a little know command in the CM CLI: `cmf dev iot convertCodeTasks`. It converts your existing code tasks into proper custom tasks automatically. This post is about why you might want that and what you gain when you do.
+There's a little known command in the CM CLI: `cmf dev iot convertCodeTasks`. It converts your existing code tasks into proper custom tasks automatically. This post is about why you might want that and what you gain when you do.
 
 ## The Code Task and How It Drifts
 

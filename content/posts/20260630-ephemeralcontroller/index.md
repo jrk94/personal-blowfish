@@ -20,7 +20,7 @@ When you need to query a third-party on demand — not maintain a persistent ses
 
 ## Overview
 
-Critical Manufacturing offers *four* (Connect IoT, Factory Automation, Data Platform and Enterprise Integration) different types of controllers out of the box. They are split into **two** big categories.
+Critical Manufacturing offers *four* different types of controllers out of the box: **Connect IoT**, **Factory Automation**, **Data Platform** and **Enterprise Integration**. They are split into **two** big categories.
 
 - **Persistent Communication**
 - **Job Execution**
@@ -126,7 +126,7 @@ If the timeout is reached it means that in the allotted time the driver did not 
 
 ![Ephemeral Controller](https://image.j-roque.com/posts/20260629-ephemeralcontroller/ephemeral_controller.png)
 
-This is of course signalling one of the issues with ephemeral connections. You pay the setup connection toll for each request. As the connection is not pre-established, the sequence will first do a new connection and only that is established will it perform the action you wish.
+This is signals one of the issues with ephemeral connections. You pay the setup connection toll for each request. As the connection is not pre-established, the sequence will first do a new connection and only that is established will it perform the action you wish.
 
 ### Managing Concurrency
 
@@ -156,7 +156,7 @@ We can now use our ephemeral connection. We will pass on the OPC-UA endpoint, pe
 
 ---
 
-Note how we can see that it starts from a ready state it moves to communicating and then goes back to disconnected.
+Note how we can see that it starts from a ready state, it moves to communicating and then goes back to disconnected. This is the ephemeral lifecycle, it goes to communicating just enough time to perform the request logic and then it disconnects.
 
 ## Final Thoughts
 
