@@ -1,0 +1,63 @@
+{{- $pctx := . -}}
+{{- if .IsHome -}}{{ $pctx = .Site }}{{- end -}}
+{{- $pages := slice -}}
+{{- if or $.IsHome $.IsSection -}}
+{{- $pages = $pctx.RegularPages -}}
+{{- else -}}
+{{- $pages = $pctx.Pages -}}
+{{- end -}}
+{{- $limit := .Site.Config.Services.RSS.Limit -}}
+{{- if ge $limit 1 -}}
+{{- $pages = $pages | first $limit -}}
+{{- end -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:content="http://purl.org/rss/1.0/modules/content/"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:media="http://search.yahoo.com/mrss/"
+  xmlns:discourse="http://discourse.org/rss/modules/discourse/">
+  <channel>
+    <title>{{ if eq  .Title  .Site.Title }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{.}} on {{ end }}{{ .Site.Title }}{{ end }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>Recent content {{ if ne  .Title  .Site.Title }}{{ with .Title }}in {{.}} {{ end }}{{ end }}on {{ .Site.Title }}</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>{{ site.LanguageCode }}</language>{{ with .Site.Params.Author.email }}
+    <managingEditor>{{.}}{{ with $.Site.Params.Author.name }} ({{.}}){{end}}</managingEditor>{{end}}{{ with .Site.Params.Author.email }}
+    <webMaster>{{.}}{{ with $.Site.Params.Author.name }} ({{.}}){{end}}</webMaster>{{end}}
+    {{ if .Site.Params.footer.showCopyright | default true -}}
+    <copyright>{{ with replace .Site.Params.copyright "{ year }" now.Year }}{{.}}{{ else }}© {{ now.Format "2006" }} {{ .Site.Params.Author.name }}{{- end }}</copyright>
+    {{- end }}
+    {{ if not .Date.IsZero }}<lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>{{ end }}
+    {{- with .OutputFormats.Get "RSS" -}}
+    {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
+    {{- end -}}
+    {{ if and (.Site.Params.rssnext.feedId) (.Site.Params.rssnext.userId) }}
+    <follow_challenge>
+      <feedId>{{ .Site.Params.rssnext.feedId }}</feedId>
+      <userId>{{ .Site.Params.rssnext.userId }}</userId>
+    </follow_challenge>
+    {{ end }}
+    {{ range $pages }}
+    {{- $page := . -}}
+    {{- $images := $page.Resources.ByType "image" -}}
+    {{- $featured := $images.GetMatch "*feature*" -}}
+    {{- if not $featured }}{{ $featured = $images.GetMatch "{*cover*,*thumbnail*}" }}{{ end -}}
+    <item>
+      <title>{{ $page.Title }}</title>
+      <link>{{ $page.Permalink }}</link>
+      <pubDate>{{ $page.Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      {{ with $.Site.Params.Author.email }}<author>{{.}}{{ with $.Site.Params.Author.name }} ({{.}}){{end}}</author>{{end}}
+      {{ with $.Site.Params.Author.discourseUsername }}<dc:creator>{{ . }}</dc:creator>
+      <discourse:username>{{ . }}</discourse:username>{{ end }}
+      <guid>{{ $page.Permalink }}</guid>
+      <description>{{ $page.Summary | html }}</description>
+      <content:encoded>{{ with $featured }}{{ printf "<p><img src=%q alt=%q /></p>" .Permalink $page.Title | html }}{{ end }}{{ $page.Content | replaceRE `(\n[ \t]*){2,}` "\n" | html }}</content:encoded>
+      {{ with $featured }}
+      <enclosure url="{{ .Permalink }}" type="{{ .MediaType.Type }}" length="0" />
+      <media:content url="{{ .Permalink }}" type="{{ .MediaType.Type }}" medium="image" />
+      {{ end }}
+    </item>
+    {{ end }}
+  </channel>
+</rss>

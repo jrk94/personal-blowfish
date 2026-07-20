@@ -1,0 +1,4 @@
+{{- $lang := .Type -}}
+{{- $nbsp := printf "%c" 160 -}}
+{{- $tabRepl := printf "%c%c%c%c" 160 160 160 160 -}}
+<pre><code{{ with $lang }} class="language-{{ . }}"{{ end }}>{{ .Inner | replaceRE `(\n[ \t]*){2,}` "\n" | replaceRE "\t" $tabRepl | replaceRE " " $nbsp }}</code></pre>

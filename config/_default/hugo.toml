@@ -41,7 +41,12 @@ enableEmoji = true
 
 [services]
   [services.rss]
-    limit = 20
+    limit = 50
+
+[minify]
+  [minify.tdewolff]
+    [minify.tdewolff.xml]
+      keepWhitespace = true
 
 [related]
   threshold = 0
