@@ -2,7 +2,7 @@
 title: "History"
 date: 2025-02-02
 draft: false
-
+showInRSS: false
 showDate : false
 showDateOnlyInArticle : false
 showDateUpdated : false

@@ -1,7 +1,7 @@
 ---
 title: "About"
 date: 2025-02-02
-
+showInRSS: false
 showDate : false
 showDateOnlyInArticle : false
 showDateUpdated : false
