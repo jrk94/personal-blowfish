@@ -35,9 +35,11 @@ That's the entire mental model.
 
 Everything else — naming conventions, Action Groups, Pre versus Post — is just detail on top of this one idea: a hook before, a hook after, and the standard method in between.
 
-![MES Request](https://image.j-roque.com/posts/20250821-howdodeeswork/MESRequest.png)
+{{< img src="https://image.j-roque.com/posts/20250821-howdodeeswork/MESRequest.png" alt="MES Request" whitebg="true" >}}
 
-![DEE Hooks](https://image.j-roque.com/posts/20250821-howdodeeswork/DEEsHook.png)
+<br>
+
+{{< img src="https://image.j-roque.com/posts/20250821-howdodeeswork/DEEsHook.png" alt="DEE Hooks" whitebg="true" >}}
 
 ## Naming Your Action Group: The Convention Nobody Tells You About
 
@@ -89,7 +91,7 @@ Each call checks whether any DEE is registered against that resolved name, and i
 
 ## When Multiple DEEs Share an Action Group
 
-There's nothing stopping you from registering as many DEEs as you want against the same Action Group, and in real implementations that's can happen, a single `TrackOut.Post`, for example, might have several DEEs attached to handle different pieces of logic. 
+There's nothing stopping you from registering as many DEEs as you want against the same Action Group, and in real implementations that can happen, a single `TrackOut.Post`, for example, might have several DEEs attached to handle different pieces of logic. 
 
 When that happens, execution runs in a **cascading sequence, lowest order to highest**.
 
@@ -232,7 +234,7 @@ This is the practical cost of the DEE/Service trade-off that catches people off 
 
 Because every DEE shows up in `T_ServiceHistory` as a generic `Execute Action`, the history UI will show as a ExecuteAction which you will then have to drill down to check what was the DEE action called.
 
-The **Service Performance** report, which without observability can sometimes be helpful to out what are the services taking with a worse performance, is blind to what DEE action is the actual bottleneck. The user will have to the go into `T_OperationHistory` and join the two tables yourself to get a real answer. That's a genuine operational disadvantage of DEEs worth knowing about before you lean on one for something performance-sensitive.
+The **Service Performance** report, which without observability can sometimes be helpful to out what are the services taking with a worse performance, is blind to what DEE action is the actual bottleneck. The user will have to the go into `T_OperationHistory` and join the two tables to get a real answer. That's a genuine operational disadvantage of DEEs worth knowing about before you lean on one for something performance-sensitive.
 
 ![DEE History](https://image.j-roque.com/posts/20250821-howdodeeswork/DEEHistory.png)
 ![DEE History2](https://image.j-roque.com/posts/20250821-howdodeeswork/DEEHistory_2.png)
