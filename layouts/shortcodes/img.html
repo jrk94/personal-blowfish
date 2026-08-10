@@ -1,0 +1,16 @@
+{{ $src := .Get "src" }}
+{{ $alt := .Get "alt" | default "" }}
+{{ $whitebg := .Get "whitebg" | default false }}
+{{ $caption := .Get "caption" }}
+<div class="not-prose">
+  <img
+    src="{{ $src | safeURL }}"
+    alt="{{ $alt }}"
+    loading="lazy"
+    decoding="async"
+    {{ if eq $whitebg "true" }}style="background-color:#fff; padding:1rem; border-radius:0.5rem;"{{ end }}
+  />
+  {{ with $caption }}
+  <p style="text-align:center; font-size:0.875rem; margin-top:0.25rem; color:var(--tw-prose-captions, #6b7280);">{{ . | markdownify }}</p>
+  {{ end }}
+</div>
