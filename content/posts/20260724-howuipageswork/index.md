@@ -140,22 +140,7 @@ The last piece of the requirement, a capacity column rendered as a green or red 
 
 ![Custom Column](https://image.j-roque.com/posts/20260724-howuipageswork/level2_customcolumn.gif)
 
-```html
-# if (data.UsedPositions != undefined && data.TotalPositions != undefined) { #
-    <div>
-        <div style="display: flex; flex-direction: row;width:100%;height:100%;align-items: center">
-            <div class="progress" style="position: relative;width:100%;margin-bottom:0px;background-color:transparent;">
-                <div class="progress-bar" role="progressbar" aria-valuenow="#: ${ percentageProperty} #" aria-valuemin="0"
-                aria-valuemax="100" style="background-color:#: (UsedPositions / TotalPositions > 0.5 ) ?
-                "var(--color-green)" : "var(--color-dark-red)" # ;position: absolute;width:#: UsedPositions #%">
-                </div>
-                <div style="position: absolute;width: 100%;color:var(--styleColor004);font-weight: bold;"
-                align="center">#: UsedPositions #/#: TotalPositions #</div>
-            </div>
-        </div>
-    </div>
-# } #
-```
+![HTML Code Block](https://image.j-roque.com/posts/20260724-howuipageswork/html-codeblock.png)
 
 ## Business Workflows: The Low-Code Way to Build a DEE
 

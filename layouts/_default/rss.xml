@@ -52,8 +52,8 @@
       {{ with $.Site.Params.Author.discourseUsername }}<dc:creator>{{ . }}</dc:creator>
       <discourse:username>{{ . }}</discourse:username>{{ end }}
       <guid>{{ $page.Permalink }}</guid>
-      <description>{{ $page.Summary | html }}</description>
-      <content:encoded>{{ with $featured }}{{ printf "<p><img src=%q alt=%q /></p>" .Permalink $page.Title | html }}{{ end }}{{ $page.Content | replaceRE `(\n[ \t]*){2,}` "\n" | html }}</content:encoded>
+      <description>{{ (print $page.Summary) | html }}</description>
+      <content:encoded>{{ with $featured }}{{ printf "<p><img src=%q alt=%q /></p>" .Permalink $page.Title | html }}{{ end }}{{ (print $page.Content) | replaceRE `(\n[ \t]*){2,}` "\n" | html }}</content:encoded>
       {{ with $featured }}
       <enclosure url="{{ .Permalink }}" type="{{ .MediaType.Type }}" length="0" />
       <media:content url="{{ .Permalink }}" type="{{ .MediaType.Type }}" medium="image" />
