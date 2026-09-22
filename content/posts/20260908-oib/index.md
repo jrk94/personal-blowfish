@@ -19,7 +19,7 @@ That is *ASMPT WORKS* OIB working exactly as designed.
 
 The **Operations Information Broker** — OIB — is ASMPT's integration platform for the WORKS software suite. It has been around since 2008, it is built on WCF web services, and it is the only sanctioned way into SIPLACE Pro, WORKS Setup Center, Line Control, Traceability, and the rest of the ASMPT stack. The native interfaces those products used to expose (COM, direct SQL, Secs-GeM, parsed XML files) are gone from public use.
 
-ASMPT's own training decks list five things OIB lets your software do:
+These are the main five things OIB lets your software do:
 
 - query for operational data
 - create or modify data
