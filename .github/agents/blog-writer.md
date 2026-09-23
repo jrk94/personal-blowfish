@@ -84,6 +84,8 @@ Posts frequently cover:
 - Team management and engineering culture (less frequent, more reflective)
 - OData, SQLite, data analytics
 
+Always try to hyperlink to other blog posts in j-roque.com. Use the full URL format `[text](https://j-roque.com/posts/YYYYMMDD-slug/)` to ensure proper linking. Also try to hyperlink to the documentation at https://help.criticalmanufacturing.com/ to provide more context and references for the reader.
+
 ## What to Avoid
 
 - Generic introductions that could apply to any blog
