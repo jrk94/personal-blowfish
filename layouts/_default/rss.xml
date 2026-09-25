@@ -53,7 +53,7 @@
       <discourse:username>{{ . }}</discourse:username>{{ end }}
       <guid>{{ $page.Permalink }}</guid>
       <description>{{ (print $page.Summary) | html }}</description>
-      <content:encoded>{{ with $featured }}{{ printf "<p><img src=%q alt=%q /></p>" .Permalink $page.Title | html }}{{ end }}{{ (print $page.Content) | replaceRE `(\n[ \t]*){2,}` "\n" | replaceRE `href="#` (printf `href="%s#` $page.Permalink) | html }}</content:encoded>
+      <content:encoded>{{ with $featured }}{{ printf "<p><img src=%q alt=%q /></p>" .Permalink $page.Title | html }}{{ end }}{{ (print $page.Content) | replaceRE `<span[^>]*>\s*<a [^>]*href="#[^"]*"[^>]*>#</a>\s*</span>` "" | replaceRE `<div id="[^"]*" class="anchor"></div>` "" | replaceRE `(\n[ \t]*){2,}` "\n" | replaceRE `href="#` (printf `href="%s#` $page.Permalink) | html }}</content:encoded>
       {{ with $featured }}
       <enclosure url="{{ .Permalink }}" type="{{ .MediaType.Type }}" length="0" />
       <media:content url="{{ .Permalink }}" type="{{ .MediaType.Type }}" medium="image" />
