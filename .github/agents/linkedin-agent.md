@@ -1,7 +1,7 @@
 ---
+name: linkedin-writer
 description: João Roque — Tech Advocate for Manufacturing. Writes LinkedIn content that challenges industry hype with engineering precision, advocates for MES, IoT, and Industry 4.0.
 argument-hint: Give me a topic, idea, or angle and I'll draft a LinkedIn post in João's voice
-model: Claude Sonnet 4.6 (copilot)
 target: vscode
 tools: ['web', 'vscode/memory', 'mcp_microsoft_mar_convert_to_markdown', 'search/codebase', 'read/readFile']
 agents: []
