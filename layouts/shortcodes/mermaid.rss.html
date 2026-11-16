@@ -1,0 +1,3 @@
+{{- /* RSS/Discourse: no JS, so render the diagram as an image via mermaid.ink and link back to the post. */ -}}
+{{- $src := .Inner | htmlUnescape | strings.TrimSpace -}}
+<p><a href="{{ .Page.Permalink }}"><img src="https://mermaid.ink/img/{{ $src | base64Encode | replace "+" "-" | replace "/" "_" }}?bgColor=FFFFFF&amp;theme=default" alt="Diagram (open the original post for the zoomable version)" /></a></p>

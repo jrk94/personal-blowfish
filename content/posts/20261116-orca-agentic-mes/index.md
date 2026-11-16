@@ -187,9 +187,7 @@ Everything above is design. Here is the first story I delivered entirely this wa
 &nbsp;
 
 
-| ![Story 132 in Azure DevOps](https://image.j-roque.com/posts/20261116-orca-agentic-mes/workitem-132.png)                                                                                                            |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| *Story 132 as it stands after delivery: tagged `agent:in-review`, three story points, the draft PR and retro commits linked, and the slice Tasks closed.* |
+{{< img src="https://image.j-roque.com/posts/20261116-orca-agentic-mes/workitem-132.png" alt="Story 132 in Azure DevOps" caption="*Story 132 as it stands after delivery: tagged `agent:in-review`, three story points, the draft PR and retro commits linked, and the slice Tasks closed.*" >}}
 
 
 ### Refine: the brief did its job
@@ -241,9 +239,7 @@ First I had a skill only running unit tests. Quickly I found that it was not eno
 
 The GUI spec produced the evidence for AC8. These are the two screenshots it captured on the worktree's own stack: the page with the product rows at the top, then the customization packages listed with their version and install date.
 
-| ![Versioning page with product rows](https://image.j-roque.com/posts/20261116-orca-agentic-mes/01-versioning-page.png)                                                                       |
-| :----------------------------------------------------------------------------------------------------------------------------------: |
-| *Application / Versioning: product rows (Database, Business, Customization) with the new custom package rows starting below them.* |
+{{< img src="https://image.j-roque.com/posts/20261116-orca-agentic-mes/01-versioning-page.png" alt="Versioning page with product rows" caption="*Application / Versioning: product rows (Database, Business, Customization) with the new custom package rows starting below them.*" >}}
 
 
 
@@ -251,9 +247,7 @@ The GUI spec produced the evidence for AC8. These are the two screenshots it cap
 &nbsp;
 
 
-| ![Custom packages listed](https://image.j-roque.com/posts/20261116-orca-agentic-mes/02-custom-packages-listed.png)                                                                             |
-| :------------------------------------------------------------------------------------------------------------------------------------: |
-| *Scrolled down: one row per installed customization package, each with its latest version and install date, as AC2 and AC7 require.* |
+{{< img src="https://image.j-roque.com/posts/20261116-orca-agentic-mes/02-custom-packages-listed.png" alt="Custom packages listed" caption="*Scrolled down: one row per installed customization package, each with its latest version and install date, as AC2 and AC7 require.*" >}}
 
 
 ### Review, publish, retro 
