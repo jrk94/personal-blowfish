@@ -1,5 +1,5 @@
 ---
-title: "Reports on ClickHouse Fail Quietly: Nine Silent Failures and How to Fix Them"
+title: "ClickHouse Report Errors That Return No Error: Nine Failures and How to Fix Them"
 description: "A report on ClickHouse rarely throws an error when it is wrong. It returns duplicates, deleted rows, truncated results or an empty column. Nine failure modes in MES reporting data sets, each with the wrong result, the reason and the fix."
 summary: "Writing MES reports on ClickHouse after years of T-SQL: duplicates without FINAL, deleted rows that stay, partitioning and version columns, JSON extraction that returns the wrong value, window functions that return defaults, empty attributes, case sensitivity, truncation at 1000 rows and comments that break data sets."
 categories: ["Analytics"]
@@ -12,11 +12,11 @@ authors:
 ---
 A SQL Server query that is wrong usually fails loudly: a missing column, a bad join, a conversion error. A ClickHouse query that is wrong usually returns a result, and the result looks fine.
 
-Duplicate rows, deleted records that are still there, a report cut at 1000 rows, a column that exists and is never filled. Each one is a silent failure, and each one has a cause you can learn.
+Duplicate rows, deleted records that are still there, a report cut at 1000 rows, a column that exists and is never filled. Each one is a silent failure that has a cause and a fix.
 
 ## Before You Start
 
-This is the second post of two. The [architecture post](https://j-roque.com/posts/20261116-clickhouse-architecture/) is the prerequisite: it owns the model, meaning the data sources, the databases, denormalization and JSON, cubes, data sets, OData and the tools. This post owns the failures. Read it first, because the failures below assume you know where the tables live.
+This is the second post of two. The [architecture post](https://j-roque.com/posts/20261116-clickhouse-architecture/) is the prerequisite: it owns the model, meaning the data sources, the databases, denormalization and JSON, cubes, data sets, OData and the tools. This post covers the failures. Read the architecture post first, because the failures below assume you know where the tables live.
 
 The [earlier post on reports](https://j-roque.com/posts/20260730-reports/) covered the pipeline. This one is for the person who has to write the query, in two parts. Part 1 covers failures that come from how the ClickHouse engine behaves (1 to 5). Part 2 covers failures that come from the platform and its Data Manager (6 to 9). Each one gets the wrong result, the reason and the fix.
 
@@ -26,15 +26,15 @@ ODS objects are referenced as `schema_ObjectName` instead of `schema.ObjectName`
 
 ## Part 1: Engine Behavior
 
-> ClickHouse is not a worse SQL Server. It is a database that gave up OLTP semantics to be very good at reading a lot of data.
+> ClickHouse gave up OLTP semantics to read large volumes of data quickly.
 
-You do not fix a row there, you supersede it: insert a new version, or run a heavy [mutation](https://clickhouse.com/docs/updating-data/overview). Which is exactly where the first silent failure lives.
+You do not fix a row in ClickHouse: you insert a new version, or run a heavy [mutation](https://clickhouse.com/docs/updating-data/overview). That is where the first silent failure comes from.
 
 The failures also assume the denormalized model: service and operation columns on every history table, and step, product and attributes as JSON snapshots instead of joins. The [architecture post](https://j-roque.com/posts/20261116-clickhouse-architecture/#how-the-data-is-shaped-denormalization-and-json) covers that shape and what it costs.
 
 ### Failure 1: Duplicate Rows Without FINAL
 
-**The wrong result:** the same logical row appears twice, or you read a superseded version of it. Totals are inflated and nothing complains.
+**The wrong result:** the same logical row appears twice, or you read a superseded version of it. Totals are inflated and no error is raised.
 
 **Why:** ClickHouse writes data in parts and merges them in the background. Our tables use `ReplacingMergeTree`, which keeps one row per sorting key. The main (state) tables have a version column and keep the highest version. The history tables have none, so on an equal key the last inserted row wins. Either way, the deduplication happens at merge time, and merges are asynchronous. Until one runs, the old and new rows both sit on disk.
 
@@ -72,7 +72,7 @@ ENGINE = ReplacingMergeTree
 ORDER BY (materialid, _servicehistory_servicehistoryid, _operationhistory_operationhistoryseq);
 ```
 
-The plain `SELECT` returns both rows, the 10:00 one and the 10:32 one. The `FINAL` one is expected to return only the 10:32 row, as long as no merge has run in between. Same table, same data, two answers.
+The plain `SELECT` returns both rows, the 10:00 one and the 10:32 one. The `FINAL` one is expected to return only the 10:32 row, as long as no merge has run in between. The two queries read the same data and return different rows.
 
 **The fix:** `FINAL`. It is a modifier on the table in the `FROM` clause that applies the replacing logic at read time. In a join, it goes after the alias, once per table.
 
@@ -101,15 +101,15 @@ The worked case below puts `FINAL` on the history tables too. On a history table
 
 > Forget `FINAL` and your report returns quickly and returns the wrong thing. Treat it as part of the table name.
 
-**Try it yourself.** Create the scratch table, run the two inserts, then the `SELECT` without and with `FINAL`. That is the whole failure in five statements, counting the `CREATE`.
+**Try it yourself.** Create the scratch table, run the two inserts, then the `SELECT` without and with `FINAL`.
 
-To see the merge itself, run `OPTIMIZE TABLE scratch_material_history FINAL` and repeat the plain `SELECT`: the duplicate should be gone. That shows the merge, it is not a technique. The [documentation](https://clickhouse.com/docs/sql-reference/statements/optimize) advises against relying on `OPTIMIZE ... FINAL`, because it rewrites parts and is expensive on real tables. Never put it in a report pipeline.
+To see the merge itself, run `OPTIMIZE TABLE scratch_material_history FINAL` and repeat the plain `SELECT`: the duplicate should be gone. That shows the merge; do not use it in a report. The [documentation](https://clickhouse.com/docs/sql-reference/statements/optimize) advises against relying on `OPTIMIZE ... FINAL`, because it rewrites parts and is expensive on real tables. Never put it in a report pipeline.
 
 ### Failure 2: Deleted Records That Are Still There
 
 **The wrong result:** a material you deleted shows up in the report.
 
-**Why:** in the ODS state tables of 12.0, deleted records are kept as rows rather than physically removed. That is how a replacing engine represents a delete: with another version of the row.
+**Why:** in the ODS state tables of 12.0, deleted records are kept as rows rather than physically removed. A replacing engine represents a delete as another version of the row.
 
 **The fix:** filter them out explicitly, and do not assume `FINAL` does it for you. The query in the worked case below relies on `FINAL` alone, which is enough for the pre-12.0 data model. If your tables carry `_is_deleted`, filter on it too. The ClickHouse rule: `is_deleted` requires a version column, so the engine is declared as `ReplacingMergeTree(ver, is_deleted)`. Deleted rows are kept by default unless you clean them up. Whether `FINAL` and the `_is_deleted` column take part in delete handling depends on the table being defined that way. Check your table with `SHOW CREATE TABLE`. The [12.0 migration notes](https://developer.criticalmanufacturing.com/12.0/explore/guides/migration/version-specific/1200/data-platform/clickhouse_migration_process/) describe the column.
 
@@ -220,7 +220,7 @@ Date-time columns also become `DateTime64(7, 'UTC')` in 12.0, so compare them as
 
 `_Attributes` is already an array of JSON strings, so you do not need `JSONExtractArrayRaw` for it. Use `arrayFilter` or `ARRAY JOIN`, then `JSONExtractString(x, 'Name')` per element.
 
-**An alias trap lives next to this one.** Name your extracts `StepName` and `ProductName`, not `Step` and `Product`. An alias that matches a real column name shadows it, and the next expression that references `Step` can silently read the alias instead of the column. The worked-case query below uses `AS Step` and `AS Product`, which work until something unqualified references them.
+Related to this, an alias that matches a real column name shadows it. Name your extracts `StepName` and `ProductName`, not `Step` and `Product`. An alias that matches a real column name shadows it, and the next expression that references `Step` can silently read the alias instead of the column. The worked-case query below uses `AS Step` and `AS Product`, which work until something unqualified references them.
 
 ### Failure 5: Window Functions That Return Defaults
 
@@ -268,7 +268,7 @@ Both columns should agree. If they do not, your frame is wrong. Test on a handfu
 
 **The fix:** use the exact case used at creation, and copy it from `SHOW CREATE TABLE`. The rule also applies to the macros the platform replaces for you, `{db_MES}`, `{db_ODS}`, `{db_CDM}` and `{db_DWH}`: the ClickHouse MES database, the ODS (Operational Data Store tables replicated from the MES SQL Server database), the CDM (canonical and IoT events data) and the DWH (aggregated data). Data Manager substitutes each with the name of the matching database before the query runs, so `{db_ODS}.CoreDataModel_T_Material` resolves in whatever database your `ODS` is deployed as. A macro with the wrong case is not replaced.
 
-Attribute names are data, not identifiers, and they fail the same way. Compare `JSONExtractString(x, 'Name') = 'SuperiorOrderNumber'` against an attribute stored as `superiorOrderNumber` and you get no rows. The worked-case query compares `lower(JSONExtractString(x, 'Name')) = 'superiorordernumber'`, which makes the match case-insensitive. Steal that.
+Attribute names are data, not identifiers, and they fail the same way. Compare `JSONExtractString(x, 'Name') = 'SuperiorOrderNumber'` against an attribute stored as `superiorOrderNumber` and you get no rows. The worked-case query compares `lower(JSONExtractString(x, 'Name')) = 'superiorordernumber'`, which makes the match case-insensitive. Use that pattern.
 
 ### Failure 8: Reports Cut at 1000 Rows
 
@@ -292,7 +292,7 @@ Attribute names are data, not identifiers, and they fail the same way. Compare `
 
 The use case from the [architecture post](https://j-roque.com/posts/20261116-clickhouse-architecture/#building-a-data-set): for each production order, find its superior production order (an attribute), the related materials, and whether each step is in process or completed, based on track in and track out events. The result feeds a Grafana dashboard.
 
-The query reads two sources, and both are history tables, which means `FINAL` for replayed events and `_Attributes` as the only place attributes are filled (Failure 6). It was written and debugged in DBeaver before it went anywhere near the platform:
+The query reads two history tables, so it needs `FINAL` for replayed events and reads `_Attributes` as the only place attributes are filled (Failure 6). It was written and debugged in DBeaver before it went anywhere near the platform:
 
 ![The data set query open in DBeaver, with the result grid below](	
 https://image.j-roque.com/posts/20261117-clickhouse-silent-failures/dbeaver-dataset-query.png "The data set query in DBeaver. Debug it here, against ClickHouse, before you paste it into a data set.")
@@ -340,9 +340,9 @@ FROM RawMaterials RM
 ORDER BY ProductionOrder, Material
 ```
 
-Several things in it are worth copying: the `JSONExtractInt` on the production order snapshot to build the join key, `lower()` on the attribute name, `countIf` as a window function, and `Status` reusing `TrackInCount` and `TrackOutCount` in the same `SELECT`. ClickHouse allows alias reuse within a query. T-SQL does not.
+The query uses `JSONExtractInt` on the production order snapshot to build the join key, `lower()` on the attribute name, `countIf` as a window function, and `Status` reusing `TrackInCount` and `TrackOutCount` in the same `SELECT`. ClickHouse allows alias reuse within a query. T-SQL does not.
 
-Two things are worth questioning, and I would not copy them. The `MAX(PO._Attributes) OVER (...)` with an `arrayJoin` inside the `PARTITION BY` is a window maximum over arrays, and it is a long way around "latest value of one attribute per order". And joining every material event to every production order history row fans the result out, so `SELECT DISTINCT` is doing real work to hide it. The query works. I would not trust it on data I had not checked against a count.
+Two things in the query I would change. The `MAX(PO._Attributes) OVER (...)` with an `arrayJoin` inside the `PARTITION BY` is a window maximum over arrays, and it is more complex than needed for "latest value of one attribute per order". And joining every material event to every production order history row fans the result out, so `SELECT DISTINCT` is doing real work to hide it. The query works, but on new data I would check it against a count first.
 
 The cleaner shape is the `argMax` history CTE from Failure 6, grouped by order, with the counts as a plain aggregation:
 
@@ -387,7 +387,7 @@ The inner join drops orders without the attribute, which is what the use case wa
 
 ## Publishing It as a Data Set
 
-Creating the data set is covered in the [architecture post](https://j-roque.com/posts/20261116-clickhouse-architecture/#building-a-data-set). Three documented limits belong here. Data set names must avoid `\ / : ? | < > * " .`. Remember Failure 9 before you paste a commented query. And parameterized views cannot reference other parameterized views across databases, so read the [data set creation page](https://help.criticalmanufacturing.com/12.0/userguide/data-platform/data/data-set/create_data_set/) before you stack them.
+Creating the data set is covered in the [architecture post](https://j-roque.com/posts/20261116-clickhouse-architecture/#building-a-data-set). Three documented limits apply to data sets. Data set names must avoid `\ / : ? | < > * " .`. Remember Failure 9 before you paste a commented query. And parameterized views cannot reference other parameterized views across databases, so read the [data set creation page](https://help.criticalmanufacturing.com/12.0/userguide/data-platform/data/data-set/create_data_set/) before you stack them.
 
 ### Parameters and Filter Pushdown
 
@@ -430,6 +430,6 @@ The URL pattern and the tools are in the [architecture post](https://j-roque.com
 
 ## Final Thoughts
 
-ClickHouse rewards you for thinking in denormalized events instead of normalized entities, and it punishes T-SQL reflexes without telling you. The failures above share one shape: the query runs, the numbers come back, and they are wrong.
+ClickHouse works best on denormalized event tables, and T-SQL habits produce wrong results without an error. In all nine failures the query runs and returns numbers, and the numbers are wrong.
 
-Test every data set against a count you trust. A report that cannot be wrong loudly has to be proven right.
+Test every data set against a count you trust, because ClickHouse does not report these errors.

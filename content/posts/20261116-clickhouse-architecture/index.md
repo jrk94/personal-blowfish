@@ -1,5 +1,5 @@
 ---
-title: "Reporting on the New MES Data Architecture: A Map from Data Source to Report"
+title: "The New MES Data Architecture: Data Sources, ClickHouse Databases and Reporting Tools"
 description: "The new MES data architecture moves complexity out of joins and into the engine and the query. A map of the data sources, the ClickHouse databases, denormalized JSON, cubes, data sets, OData and the tools on top."
 summary: "You write fewer joins on ClickHouse, but you have to understand how the data is shaped and stored. From SQL Server and Analysis Services to ClickHouse, CDM and cubes over GraphQL, and on to data sets, OData, Stimulsoft, Grafana and Power BI."
 categories: ["Analytics"]
@@ -10,15 +10,15 @@ draft: false
 authors:
   - Roque
 ---
-The new MES data architecture does not remove complexity. It moves it out of the joins and into the engine and the query.
+The new MES data architecture puts most of the work in the engine and the query, so the queries have fewer joins.
 
-You write fewer joins. In exchange, you have to understand how the data is shaped and how it is stored, because the engine will happily answer a question you did not mean to ask.
+You write fewer joins, but you need to know how the data is shaped and stored, because ClickHouse returns a result even when the query means something else.
 
 ## Overview
 
 The [previous post on reports](https://j-roque.com/posts/20260730-reports/) covered the pipeline: events, Kafka, ClickHouse, data sets. This one starts where the data lands and ends at a finished report, using the Critical Manufacturing MES Data Platform. Table names come from the 11.x-era data model and can differ by version, so confirm them with `SHOW CREATE TABLE` on your system. Reference material lives in the [Critical Manufacturing documentation](https://help.criticalmanufacturing.com/).
 
-This post owns the model. The [next post](https://j-roque.com/posts/20261117-clickhouse-silent-failures/) owns the failures.
+This post covers the model. The [next post](https://j-roque.com/posts/20261117-clickhouse-silent-failures/) covers the failures.
 
 ## Recap: New Data Architecture
 
@@ -37,7 +37,7 @@ Three of the six are new: CDM, Apps and IoT Events. The cubes stay, but they mov
 
 ## The Databases
 
-ClickHouse has databases, not schemas inside a database. That one fact explains most of the naming you will see.
+ClickHouse has databases, not schemas inside a database. The naming in this section follows from that.
 
 ### ODS: Same Objects, Different Separator
 
@@ -124,7 +124,7 @@ Cubes replace Analysis Services for the question "how much, by what", where the 
 
 ## SQL Server vs ClickHouse
 
-ClickHouse is not a worse SQL Server. It gave up OLTP semantics to be very good at reading a lot of data. Here is the comparison I would put on a wall:
+ClickHouse gave up OLTP semantics to read large volumes of data quickly. The comparison:
 
 | | SQL Server (T-SQL) | ClickHouse |
 | :-- | :-- | :-- |
@@ -136,7 +136,7 @@ ClickHouse is not a worse SQL Server. It gave up OLTP semantics to be very good 
 | Stored procedures | Yes | No |
 | Typical size | GBs to TBs | TBs to PBs. A positioning statement, not a limit |
 
-The row that bites reporting people is updates. You do not fix a row in ClickHouse, you supersede it, and that has consequences for every query you write.
+Updates matter most for reporting. ClickHouse does not change a row in place: you insert a new version, so every query has to account for that.
 
 ## The Few Functions That Matter
 
@@ -152,7 +152,7 @@ ClickHouse SQL has a long function list. A handful do the work that joins and wi
 
 `argMax(event_type, event_time)` gives you the last event and `argMin` the first, which replaces most of the `ROW_NUMBER() = 1` subqueries you wrote in T-SQL. `uniq` is an approximate distinct count, cheap and not exact. `uniqExact` is its exact counterpart. Conditionals are lowercase `if` and `multiIf`.
 
-Two traps sit next to these. The `simpleJSONExtract*` family is faster than `JSONExtract*`, but it needs compact JSON and matches a field at any nesting depth, so default to `JSONExtract*` ([Failure 4](https://j-roque.com/posts/20261117-clickhouse-silent-failures/#failure-4-json-extraction-that-returns-the-wrong-value)). And `lag` and `lead` are supported window functions, while the `*InFrame` variants only see what the frame lets them see ([Failure 5](https://j-roque.com/posts/20261117-clickhouse-silent-failures/#failure-5-window-functions-that-return-defaults)).
+Two details about these functions. The `simpleJSONExtract*` family is faster than `JSONExtract*`, but it needs compact JSON and matches a field at any nesting depth, so default to `JSONExtract*` ([Failure 4](https://j-roque.com/posts/20261117-clickhouse-silent-failures/#failure-4-json-extraction-that-returns-the-wrong-value)). And `lag` and `lead` are supported window functions, while the `*InFrame` variants only see what the frame lets them see ([Failure 5](https://j-roque.com/posts/20261117-clickhouse-silent-failures/#failure-5-window-functions-that-return-defaults)).
 
 ## The Engine in One Paragraph
 
@@ -224,7 +224,7 @@ Create a report, add a data source of the user-defined data manager type, and th
 
 ### Grafana
 
-Grafana is where the data set earns its keep. This dashboard uses the OData data source and works like this:
+This Grafana dashboard reads the data set through the OData data source and works like this:
 
 - **A variable from the data set.** A query variable `SuperiorPO` runs `<DataSet>?$select=SuperiorPO` against the data set, with multi-select and an "All" option.
 - **The table filters on it.** `$select=...&$filter=SuperiorPO in (${SuperiorPO:singlequote})`, with `usePost` enabled so the long query goes as a POST.
@@ -234,7 +234,7 @@ Grafana is where the data set earns its keep. This dashboard uses the OData data
 
 Overrides do the formatting. A value mapping turns `Completed` green and `InProcess` yellow, and the cell background option paints the whole cell. A data link on the `Material` column opens the material page in the MES using the hidden `MaterialId`, so the table is also a navigation tool.
 
-The standard table has limits, such as row layouts it cannot produce. The HTML graphics panel is the escape hatch. You write HTML and JavaScript, transform the data yourself, and render whatever you want. Reach for it when the table runs out, not before.
+The standard table has limits, such as row layouts it cannot produce. The HTML graphics panel lets you write HTML and JavaScript and transform the data yourself. Use it when the standard table cannot produce the layout you need.
 
 Grafana also reads the cubes through the `DataManager-Cubes` data source, with the GraphQL query from the Cube Playground. Use it for aggregated, pre-modeled measures such as state durations, and data sets when you need rows.
 
@@ -242,11 +242,11 @@ Grafana also reads the cubes through the `DataManager-Cubes` data source, with t
 
 Point them at the same OData feed. A table with counts per superior order and a pie chart takes minutes.
 
-![Power BI report built on the OData feed of the data set](https://image.j-roque.com/posts/20261116-clickhouse-architecture/powerbi-odata.png "Power BI on the same OData endpoint. No new integration, just another consumer.")
+![Power BI report built on the OData feed of the data set](https://image.j-roque.com/posts/20261116-clickhouse-architecture/powerbi-odata.png "Power BI on the same OData endpoint.")
 
 ## Final Thoughts
 
-The architecture has a clean shape, and it asks for something in return. A data set exposed over OData is consumed by Stimulsoft, Grafana and Power BI or Excel alike. Cubes go through GraphQL instead.
+A data set exposed over OData is consumed by Stimulsoft, Grafana and Power BI or Excel alike. Cubes go through GraphQL instead.
 
 
 
