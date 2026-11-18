@@ -1,0 +1,44 @@
+# Calibration: a real AI-accent review
+
+This is a review of `content/posts/20261118-agenticframework/index.md` (first version) written by the CEO. Use it to calibrate:
+
+- **What counts as a trap.** Almost every flagged line was written to sound good, not to say something.
+- **How plain the fix is.** Every suggestion is a literal sentence with a subject, a verb and the actual fact. Several are "Delete."
+- **What is left alone.** Code, file samples, tables of facts and step-by-step walkthroughs were not flagged.
+
+| # | As written | Trap | Suggested change |
+| --- | --- | --- | --- |
+| 1 | "One Agent Framework, Many Problems: **Taming** Multi-Format File Integrations with CM MES v12" | Metaphor, slogan title | "Reading CMM, CSV and XML Inspection Files into One Data Collection with a CM MES v12 Agent" |
+| 2 | "MES v12 changes how we **attack** that folder. **Not with a smarter parser, but with** an agent framework built into the MES itself…" | Not X but Y, metaphor | "In MES v12, an agent framework built into the MES reads those files. Agents, their tools and their runtime are configured, secured and shipped like any other MES entity." |
+| 3 | "One product, several measuring machines, and every one of them **speaks its own dialect**." | Fragment, metaphor | "The example is one product measured on three machines, and each machine exports its results in its own file format." |
+| 4 | "…AI only matters when it **closes the loop** into the MES. **This is that argument with a working integration behind it.**" | Metaphor, sentence that announces itself | "…AI is useful only when its output is written back into the MES. This post shows an integration that does that." |
+| 5 | Heading: "The Problem: One Part, Three **Dialects**" | Slogan heading | "The problem: one part, three file formats" |
+| 6 | "**Three layouts and three naming styles for the same features.**" | Fragment | "The three files use different layouts and different names for the same features." |
+| 7 | "Three formats today, seven next year, each with a regex that breaks the day a vendor adds a column. **The parser is never the hard part. Keeping twenty of them alive is.**" | Staccato, reversal (variant of not X, it's Y) | "With one parser per format, three formats today become seven next year, and each regex breaks when a vendor adds a column. Most of the cost comes from maintaining the parsers after they are written." |
+| 8 | "**The cost of file integration is not writing the first parser. It is owning the twentieth.**" | Not X, it's Y; slogan | Delete. Row 7 already makes the point. |
+| 9 | "**The framework is small, and that is its strength.** Four concepts **carry** it:" | Announces importance | "The framework rests on four concepts:" |
+| 10 | "**This is the part that is easy to undersell.** Before v12, 'add AI' meant…" | Announces importance | Delete the first sentence and start with "Before v12, 'add AI' meant…" |
+| 11 | "Now the agent **lives where the rest of the manufacturing model lives**." | Metaphor, slogan closer | "In v12 the agent is stored, secured and versioned in the MES, next to the rest of the manufacturing model." |
+| 12 | Heading: "The Agent: Ask the MES, Don't Hard-Code It" | Slogan heading | "The agent reads the Data Collection definition from the MES at runtime" |
+| 13 | "**The important design choice** is in step 1 and 2 of the procedure." | Announces importance (plus a grammar slip) | "Steps 1 and 2 of the procedure fetch the parameter list from the MES, so the prompt does not need to contain it." |
+| 14 | "**The consequence is what makes this scale:** change the Data Collection in the MES and the agent follows." | Announces importance, "Do X and Y" kicker | "When someone changes the Data Collection in the MES, the agent uses the new definition on the next file." |
+| 15 | "**No prompt edit, no redeploy.**" | Fragment | "Nobody has to edit the prompt or redeploy the agent." |
+| 16 | "And the output is **a contract, not prose**." | Not X, it's Y | "The agent returns a fixed JSON structure." |
+| 17 | Heading: "The Connect IoT Side: **Deterministic Around the Probabilistic**" | Slogan heading, jargon | "Connect IoT checks every agent answer with fixed rules before posting" |
+| 18 | "The agent is **one task in a workflow, not the workflow**." | Not X, it's Y | "The agent is one task inside a Connect IoT workflow." |
+| 19 | "The Agent Flow sub-workflow is **where the pattern lives**:" | Metaphor | "The Agent Flow sub-workflow runs three tasks in order:" |
+| 20 | "**Note what the info log does not contain: the prompt.** … and **that is a rule worth keeping** for every task that talks to a model." | Setup sentence, announces importance | "The info log leaves out the prompt, because these prompts carry whole equipment files. … Apply the same logging rule to every task that calls a model." |
+| 21 | "**The final word** on limits, SPC and protocols **stays where it always was**:" | Metaphor | "The MES still validates limits, SPC and protocols on the post, as it does for any other integration." |
+| 22 | "**Flexible on the input side, strict on the output side. That is the whole trick.**" | Slogan, announces importance | "The agent accepts any file layout, and the guard clause passes only answers that meet fixed checks." |
+| 23 | Heading "The Result" + "**Three formats, one Data Collection.**" | Topic heading, fragment | Heading: "Result: three file formats posted to one Data Collection." Then delete the fragment. |
+| 24 | "The optional parameters are where hand-written parsers usually **crack**" | Metaphor | "Hand-written parsers usually fail on optional parameters, because each source covers a different subset." |
+| 25 | "**An agent you configure by hand in one environment is a demo. An agent in source control is a feature.**" | Slogan pair | "An agent configured by hand exists in one environment only. In source control, it is versioned and installed like the rest of the project." |
+| 26 | "**That is the Build vs Buy argument in miniature. The cheap part was… The valuable part is…**" | Announces importance, parallel staccato | "This is a small example of the Build vs Buy argument: writing the instructions took little effort, and versioning, deployment, security and audit came with the platform." |
+| 27 | "**File parsing is the example, not the point.**" | Not X, it's Y | "The same four pieces (…) also cover monitoring and control:" |
+| 28 | "**The progression is deliberate.** … Control is where the guard **stops being a nice-to-have and becomes the design**." | Announces importance, reversal | "Data collection is low risk because the MES validates everything after the fact. Monitoring adds judgment but no actuation. In control, the workflow writes to equipment, so the guard is the main safety mechanism." |
+| 29 | "What does not change across the three is **the centre. One place to define agents. One place to grant tools. One identity model… One runtime…** That is what centralized means here: **not one big agent, but one way of** building and governing many small ones." | Abstract topic sentence, staccato run, not X but Y | "In all three cases, agents are defined in one place, tools are granted in one place, agents act under one identity model, and the MES keeps one runtime in sync. Many small agents are built and governed the same way." |
+| 30 | "…the alternative most plants are **drifting into**… **Each one is reasonable on its own. Together they are ungovernable.**" | Metaphor, ironic reversal as closer | "Many plants are instead adding a chatbot here, a Python script with an API key there, and a vendor's AI module in the historian, each with its own credentials and no single place to govern them." |
+| 31 | "**What v12 changes is where the intelligence lives.** …tools are **granted not improvised**… **The model reads the chaos. The MES decides what is true.**" | Slogan, not X but Y, metaphor pair | "In v12, agents are MES entities, each agent has an explicit list of tools, and the workflow engine runs the fixed checks. The model interprets the file, and the MES validates the result." |
+| 32 | "Start with data collection… **Then move up the stack. The framework is the same all the way to control. Only the guard gets stricter.**" | Staccato run | "Data collection is the safest place to start, because the MES already checks the answer. Monitoring and control use the same framework with stricter guards." |
+| 33 | "Next blogs I'll **show case** more business use cases… **Stay tuned for more!**" | Cliché hook, typo | "In the next posts I'll show more business use cases, a human-in-the-loop flow and a multi-agent assessment." |
+| 34 | millimetres, micrometres, centre, judgement | UK spelling | millimeters, micrometers, center, judgment. Leave the CMM report sample ("Centre D1") as it is, because it's equipment output. |
