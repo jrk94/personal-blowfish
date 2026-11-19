@@ -12,7 +12,7 @@ authors:
 ---
 A local Kubernetes cluster will accept every YAML file DevOps Center generates. Every `kubectl apply` returns `created`, and you can still end up with an environment you cannot open.
 
-A managed cluster provides a default storage class and a LoadBalancer implementation. A bare single-node cluster in WSL has neither, so the volumes stay unbound and the Traefik service stays on `<pending>`. Those two are visible, but easy to misread. The other two are on you on any cluster: the Traefik CRDs that match the agent's Traefik, and a name that Windows can resolve. The CRD one gives no obvious error at all.
+A managed cluster provides a default storage class and a LoadBalancer implementation. A bare single-node cluster in WSL has neither, so the volumes stay unbound and the Traefik service stays on `<pending>`. Those two are visible, but easy to misread. The other two are on you on any cluster: the Traefik CRDs that match the Traefik of your MES version, and a name that Windows can resolve. The CRD one gives no obvious error at all. This post follows the flow for an agent before 12.0.0, where the agent brings its own Traefik as the ingress. From 12.0.0 you bring your own.
 
 ## Before You Start
 
@@ -22,7 +22,15 @@ The setup this post follows is a colleague's single-node Kubernetes cluster insi
 
 The post assumes a bare cluster, the kind you get from a kubeadm-style install. Distributions such as k3s, minikube, kind and Docker Desktop ship some of these defaults (storage, a load balancer or an ingress), so the traps change there. Check what yours ships before you install anything. In that setup the cluster commands ran as root inside WSL.
 
-Every command block below is a sketch to adapt, not a transcript. I adapted them from the official Kubernetes, Traefik, MetalLB and local-path-provisioner documentation, and angle brackets mark the placeholders you replace. Anything I could not confirm is collected in [What I Did Not Verify](#what-i-did-not-verify).
+### Which Versions This Covers
+
+The setup is MES 11.2.3 with an infrastructure agent before 12.0.0, where the agent brings its own Traefik. This post follows that pre-12 flow.
+
+Agent 12.0.0 changed ingress. Per the [infrastructure agent page](https://portal.criticalmanufacturing.com/Help/devops-center/infrastructure-agent/) (Customer Portal, login required), Traefik is no longer included, and you install and configure a customer-managed ingress controller before deploying environments. The [12.0 migration guide](https://developer.criticalmanufacturing.com/12.0/explore/guides/migration/version-specific/1200/infrastructure_1200/) adds that the "Connect to a central Traefik" option is removed, that you provide the ingress controller, its external endpoint, DNS records and TLS certificates, and that the Traefik inside each MES stack still routes inside its environment, behind your controller.
+
+So on 12.0.0 and later there is a fifth thing to prepare, between the CRDs and the load balancer: an ingress controller. The Traefik CRDs are still needed for the MES stack. I do not write the 12.x steps here. The [Ingress Controller Requirements](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/ingress-controller/) page (Customer Portal, login required) covers them, and it states that a load balancer alone does not process Ingress resources.
+
+Every command block below is a sketch to adapt, not a transcript. I adapted them from the official Kubernetes, Traefik, MetalLB and local-path-provisioner documentation, and from the DevOps Center pages for the Manual Kubernetes target, and angle brackets mark the placeholders you replace. Anything I could not confirm is collected in [What I Did Not Verify](#what-i-did-not-verify).
 
 ## The Eight-Step Flow
 
@@ -40,19 +48,19 @@ On the cluster, this order avoids the traps:
 
 1. The cluster itself, healthy.
 2. A default storage class.
-3. The Traefik CRDs that match the agent.
+3. The Traefik CRDs that match your MES version.
 4. Deploy the agent.
 5. Create and deploy the environment.
 6. A LoadBalancer implementation and an external IP for the Traefik service.
 7. The hosts file entry on Windows.
 
-Portal steps 1 to 3 come first, because the agent version decides which CRDs you need.
+Portal steps 1 to 3 come first. The CRDs go in before anything is deployed, because the Manual Kubernetes target lists them as a cluster precondition, and the MES version you are about to deploy decides which ones.
 
 ## Manual Versus Remote
 
-In **remote** mode, the cluster pulls everything through the agent and the portal. In **manual** mode, you download a ZIP and apply the YAML files yourself.
+The Manual targets are a local deployment from a machine configured to access the cluster. Kubernetes Remote, OpenShift Remote and AKS deploy remotely and automatically, either to an internet-facing cluster or through an infrastructure agent, per the [Kubernetes targets page](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/kubernetes-targets/) (Customer Portal, login required).
 
-My understanding is that this is the only difference between the two modes. Remote needs a connected agent to deploy anything. Manual needs one too, as you will see in step 7, because the Environment Manager still downloads packages through it.
+So the difference is bigger than who applies the YAML. In remote mode DevOps Center applies it, to a cluster it can reach. In manual mode you do, and the agent is not required for that. A manual deployment needs the cluster to reach the Customer Portal, its Security Portal and the registries. In this setup the cluster had that access.
 
 I would use manual mode for a local cluster for a practical reason: you see every object that lands in the cluster.
 
@@ -66,7 +74,9 @@ The infrastructure agent is the piece that connects your cluster to the portal. 
 
 Create the single-node cluster in WSL and check that it is healthy before you apply anything from DevOps Center. This post does not depend on a distribution.
 
-Create a user or service account with cluster admin permissions, then check the nodes and the system pods:
+The [Kubernetes target preconditions](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/kubernetes-targets/kubernetes_on_premises/#preconditions) (Customer Portal, login required) list what the Manual target expects: PowerShell 7, a Kubernetes cluster ("either local, hybrid or on the cloud"), access to the Customer Portal, its Security Portal, the Critical Manufacturing container registry, Docker Hub and the Microsoft Container Registry, a load balancer such as MetalLB, `kubectl` configured and authenticated, a customer-managed ingress controller (agent 12.0.0 and later provide none), and the Traefik CRDs. Cluster admin is not required, only a role with access to a set of resource types. I used a cluster admin account on a laptop cluster, which is convenient and not necessary.
+
+Check the nodes and the system pods:
 
 ```bash
 kubectl get nodes
@@ -114,65 +124,65 @@ provisioner: <the-provisioner-name>
 
 Per the Kubernetes documentation, if a default class appears later, existing claims with an unset `storageClassName` are updated to use it. If the environment YAML sets a class name explicitly, a default will not help, and you need a class with that name. Which case applies depends on the YAML, and I did not check what it sets. That is why the storage class goes in before the environment, not after.
 
+Because the volume claims reference a storage class, the reclaim policy of the class you create decides what happens to the data when volumes are removed. The [volume considerations in the 11.0 deployment guide](https://developer.criticalmanufacturing.com/12.0/explore/guides/migration/version-specific/1100/customer_deployment_1100/) say that a deployment referencing a storage class creates a claim with the same reclaim policy as the class, and that dynamic volumes may be lost or inaccessible if deleted. NFS volumes can be recreated pointing at the same location.
+
 ### Trap 2: Traefik CRDs Missing or the Wrong Version
 
 This is the one I would check first, on any cluster. It is a common cause of "application not available" after an install or an upgrade, and it is the one that gives no obvious error.
 
 **Symptom:** the install finishes, the pods run, and the URL says the application is not available. The UI and the Environment Manager are both unreachable. Nothing in the portal tells you why.
 
-**Reason:** the agent deploys Traefik, and the ingress routes of the environment are Traefik custom resources. If the Traefik CRDs are missing, or older than the version the agent's Traefik expects, Traefik cannot understand the routes that DevOps Center ships. There is no route, so there is nothing to open.
+**Reason:** the environment's ingress routes are Traefik custom resources, consumed by the Traefik that runs inside the MES stack. If the Traefik CRDs are missing, or older than the version that MES stack's Traefik expects, Traefik cannot understand the routes that DevOps Center ships. There is no route, so there is nothing to open. The CRD version follows the **MES version**, not the agent. The mapping is in [Which Traefik Version the CRDs Must Match](#which-traefik-version-the-crds-must-match) below: for MES 11.2.3 and later 11.x it is 3.6, which is the version in this setup, for 11.2.0 to 11.2.2 it is 3.5, and for 12.0.0 and later it is 3.7.
 
-In that setup, the agent for 11.2 needed the CRDs for Traefik v3.6. Read the Traefik image tag from your agent package, not from this post.
-
-To confirm the symptom, list the resources and read the Traefik logs once the agent is running:
+To confirm the symptom, list the resources and read the Traefik logs once the environment is running:
 
 ```bash
 kubectl get crd | grep traefik
 kubectl get ingressroute -A
-kubectl -n <agent-namespace> logs deployment/<traefik-deployment>
+kubectl -n <environment-namespace> logs deployment/<traefik-deployment>
 ```
 
 If the CRDs are missing, `kubectl` should not know the `ingressroute` resource type at all. If they are present but too old, look in the Traefik log for errors from its Kubernetes provider. I did not capture the exact messages.
 
-**Fix:** install the CRDs before you deploy the agent. The [Traefik documentation](https://doc.traefik.io/traefik/reference/install-configuration/providers/kubernetes/kubernetes-crd/) says to apply the definitions from the Traefik repository, with the version in the URL. The page I opened was for v3.7, and the same path exists for v3.6.
+**Fix:** install the CRDs before you deploy the environment. The [Traefik documentation](https://doc.traefik.io/traefik/reference/install-configuration/providers/kubernetes/kubernetes-crd/) says to apply the definitions from the Traefik repository, with the version in the URL, and the target prerequisites link the CRD file for each version. Pick the row for your MES version. The version is part of the URL, so the pattern is the same for every row. The example is v3.6, for 11.2.3.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
 ```
 
-If the agent is already running, restart only the Traefik deployment so it picks the definitions up:
+If the stack's Traefik is already running, restart only that deployment so it picks the definitions up:
 
 ```bash
-kubectl -n <agent-namespace> rollout restart deployment/<traefik-deployment>
+kubectl -n <environment-namespace> rollout restart deployment/<traefik-deployment>
 ```
 
-Do not restart every deployment in the namespace. That restarts the Edge Forward Proxy too, and the agent goes red again until it reconnects.
+Do not restart every deployment in the namespace, and on a pre-12.0 agent do not restart the agent's deployments either. That restarts the Edge Forward Proxy too, and the agent goes red again until it reconnects.
 
-The same Traefik page lists an RBAC file next to the definitions, documented for installs that do not use the Helm chart. I did not check whether the agent already ships that RBAC, so look at what your agent ZIP contains.
+The stack's Traefik RBAC is generated during deployment, per the [Kubernetes target preconditions](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/kubernetes-targets/kubernetes_on_premises/#preconditions) (Customer Portal, login required), so you do not add it by hand. That is separate from the RBAC of a customer-managed ingress controller on 12.x, which is yours to configure.
 
-> If the environment is up and the URL says unavailable, check the Traefik CRDs before you touch anything else.
+> If your cluster ingress controller is itself Traefik (the 12.x path), the [MES stack Traefik page](https://help.criticalmanufacturing.com/operationguide/system-administration/container-stack/messtackcomponents/#traefik) requires an entrypoint named `web-secure`, for example `--entrypoints.web-secure.address=:8443`. The MES stack references it, and a missing or renamed entrypoint makes HTTPS fail with no clear error.
 
 ## Step 4: Deploy the Agent
 
-Apply the agent YAML files with `kubectl apply`, pointing at the folder where you extracted the ZIP. The packages also ship PowerShell scripts, so install `pwsh` in WSL first and run them with it.
+Extract the agent ZIP, open a PowerShell 7 terminal in that directory and run the deploy script. PowerShell 7 is a documented precondition of the Manual target, so install `pwsh` in WSL first. This is the documented path for the pre-12 agent, per the [pre-12 agent deployment page](https://portal.criticalmanufacturing.com/Help/devops-center/infrastructure-agent/create_infrastructure_agent_kubernetes_pre_12/#4-deploy) (Customer Portal, login required).
 
 ```bash
-kubectl apply -f <agent-folder>
+pwsh ./deployStackToKubernetes.ps1
 ```
 
-The result is a new namespace named after the agent, with three pods: the Edge Forward Proxy, the Edge Squid Proxy and Traefik. Check them:
+The result is a new namespace named after the agent. On the agent before 12.0.0 used here there are three pods: the Edge Forward Proxy, the Edge Squid Proxy and Traefik. A 12.0 agent has no Traefik pod, and Squid is optional and off by default, so expect one pod on a modern 12.x agent. Check them:
 
 ```bash
-kubectl get pods -n <agent-namespace>
+kubectl -n <agent-namespace> get pods
 ```
 
 ## Step 5: Agent Connected
 
-The agent shows **red** in DevOps Center when it is not connected and **green** when it is. It started red. A few minutes later, when the Edge Forward Proxy pod came up, it turned green.
+The agent shows **red** in DevOps Center when it is not connected and **green** when it is. It started red. A few minutes later, when the `edgeforwardproxy` pod was ready, it turned green. Refresh the Customer Infrastructure page once that pod is ready.
 
-That pod can take a few minutes to start, and red only means the agent is not connected yet, so look at the pod before you delete anything. If it stays red, check that pod first. The agent connects outbound to the portal, so it should need outbound access and no inbound port.
+That pod can take a few minutes to start, and red only means the agent is not connected yet, so look at the pod before you delete anything. If it stays red, check that pod first, and check that the cluster reaches the addresses listed in the preconditions: the Customer Portal, its Security Portal, the Critical Manufacturing container registry, Docker Hub and the Microsoft Container Registry. The agent connects outbound, so it needs no inbound port.
 
-Do not move to step 6 until it is green. Without a connected agent you cannot install anything.
+Do not move to step 6 until it is green.
 
 ## Step 6: Create the Environment
 
@@ -180,16 +190,20 @@ Create the customer environment in DevOps Center: a system name, a tenant name a
 
 ## Step 7: Deploy MES
 
-Apply the environment YAML files. They arrive as a stack file that a PowerShell script from the ZIP runs, so use `pwsh` for the script. The script's name and arguments are not given here, so read it before you run it.
+Download the environment deployment artifact, extract it and run the deploy script from that folder. It contains the deploy and remove PowerShell 7 scripts `deployStackToKubernetes.ps1` and `removeStackFromKubernetes.ps1`, per the [Manual Kubernetes deployment page](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/kubernetes-targets/kubernetes_on_premises/#deployment) (Customer Portal, login required).
 
 ```bash
-pwsh ./<script-from-the-environment-zip>.ps1
-kubectl apply -f <environment-folder>
+pwsh ./deployStackToKubernetes.ps1
 ```
 
-Which of the two your package expects depends on its contents.
+The script creates a namespace for the environment (reused on upgrades), then the secrets and config maps, then the remaining resources: deployments, services, volumes and ingresses. Watch until everything is Ready:
 
-This was a clean installation: no database and no packages. The Environment Manager fetches the product baseline database and the packages for the MES version, 11.2.3 in that setup, and it downloads them through the agent. That is why the agent has to be connected. It restores the baseline and installs. It takes some minutes.
+```bash
+kubectl get deployments --watch -n <environment-namespace>
+kubectl get pods --watch -n <environment-namespace>
+```
+
+This was a clean installation: no database and no packages. The Environment Manager fetches the product baseline database and the packages for the MES version, 11.2.3 in that setup, which needs the same network access as the agent. It restores the baseline and installs. It takes some minutes. On 11.x the agent's Edge Squid Proxy is one way to get there; from 12.0 the Edge Forward Proxy reaches the portal directly and Squid is not needed, per the [Edge Squid Proxy section](https://portal.criticalmanufacturing.com/Help/devops-center/infrastructure-agent/#edge-squid-proxy) (Customer Portal, login required).
 
 Watch the provisioner create folders as claims bind, which shows the first trap is behind you. When the pods run, the last two traps are left.
 
@@ -203,7 +217,7 @@ Watch the provisioner create folders as claims bind, which shows the first trap 
 kubectl get services -n <agent-namespace>
 ```
 
-**Fix:** install a bare-metal implementation. That setup used [MetalLB](https://metallb.io/installation/). The steps are install it, wait for its pods, create an address pool, create a layer 2 advertisement and give the Traefik service an address from the pool. The release in the URL is the one on the installation page when I read it, so check the current one. The page also lists an FRR-K8s manifest as the recommended mode. I show the native one as the simplest, and I have not compared the two.
+**Fix:** install a bare-metal implementation. The Manual target lists a load balancer such as MetalLB as a precondition. That setup used [MetalLB](https://metallb.io/installation/). The steps are install it, wait for its pods, create an address pool, create a layer 2 advertisement and give the Traefik service an address from the pool. The release in the URL is the one on the installation page when I read it, so check the current one. The page also lists an FRR-K8s manifest as the recommended mode. I show the native one as the simplest, and I have not compared the two.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.16.2/config/manifests/metallb-native.yaml
@@ -277,20 +291,32 @@ kubectl get pods -n <environment-namespace>
 
 Open the public URL you configured, `mes.local` in this post. MES is running. The first login prompts for a new password for the initial user, as usual.
 
-## An Open Question: Skipping the Agent's Traefik
+## Which Traefik Version the CRDs Must Match
 
-Some customers do not want the agent's Traefik, because they already run their own ingress or because of security rules. There is an option in the DevOps Center deployment to skip Traefik. Those customers create an ingress that points straight at the Traefik inside the MES stack.
+The CRDs match the Traefik of the **MES stack**, chosen by MES version, not the Traefik of the agent. The [Kubernetes target preconditions](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/kubernetes-targets/kubernetes_on_premises/#preconditions) (Customer Portal, login required) say the installed version must match the Traefik version, which varies with the MES version, and publish this mapping:
 
-The open question: **which Traefik version should the CRDs match, the one in the stack or the one in the agent?**
+| MES version | Traefik version |
+| :-- | :-- |
+| ^9 | 2.6.2 |
+| ^10 | 2.10.3 |
+| >=10.2.14 | 2.11.31 |
+| ~11.0.0 | 3.0 |
+| >=11.1.0 & <=11.1.5 | 3.1 |
+| ~11.1.6 | 3.4 |
+| >=11.2.0 & <=11.2.2 | 3.5 |
+| >=11.2.3 & <12.0.0 | 3.6 |
+| >=12.0.0 | 3.7 |
 
-An 11.2 agent runs Traefik v3.6, and a 10.2 stack ships an older Traefik, v2. The [Traefik v2 to v3 migration details](https://doc.traefik.io/traefik/migrate/v2-to-v3-details/) state that the `traefik.containo.us` CRD API group was removed in v3 in favor of `traefik.io`, so the two generations are not interchangeable. I could not determine which set an ingress pointing at the stack's Traefik needs. If you run this setup, test it on a throwaway cluster first.
+The [Ingress Controller Requirements](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/ingress-controller/) page (Customer Portal, login required) adds that these CRDs are used by the MES stack's Traefik, even when the cluster ingress controller is a different product. So you need them whether or not you run the agent's Traefik.
+
+That settles the case of a customer who does not want the agent's Traefik, for security reasons or because they already run an ingress. They route to the Traefik inside the MES stack, and the CRDs follow the MES version. In 12.0.0 the "Connect to a central Traefik" option, which registered the stack on the agent's Traefik, is removed altogether. The [Traefik v2 to v3 migration details](https://doc.traefik.io/traefik/migrate/v2-to-v3-details/) also state that the `traefik.containo.us` CRD API group was removed in v3 in favor of `traefik.io`, which is why the v2 and v3 rows are not interchangeable.
+
+## Tearing It Down
+
+For a Manual target, terminate the version in DevOps Center and run `removeStackFromKubernetes.ps1` from the artifact. Per the [terminate section](https://portal.criticalmanufacturing.com/Help/devops-center/deployment-targets/kubernetes-section/kubernetes-targets/kubernetes_on_premises/#terminate) (Customer Portal, login required), it deletes the namespace and the non-namespaced resources related to it, and it does not remove volumes unless you pass `-RemoveVolumes`. The options and the reasons to tick or skip them are in the [Remove section of the first post](https://j-roque.com/posts/20261119-devops-center-install/#remove).
 
 ## What I Did Not Verify
 
-- That manual and remote mode differ only in who applies the YAML.
-- The option to skip the agent's Traefik. The DevOps Center pages sit behind a login, so I could not check it in the public help.
-- That an 11.2 agent needs the Traefik v3.6 CRDs and that a 10.2 stack ships Traefik v2. Both come from that setup, not from public documentation.
-- Whether the agent package already ships the Traefik RBAC.
 - The exact output of `kubectl get pvc`, `kubectl describe pod`, `kubectl get ingressroute` and the Traefik logs in the failing cases. I describe what I expect, not captured output.
 - That local-path-provisioner works with the MES environment volumes. That setup used NFS.
 - That the WSL kernel you run has NFS server support.
@@ -301,6 +327,6 @@ An 11.2 agent runs Traefik v3.6, and a 10.2 stack ships an older Traefik, v2. Th
 
 ## Final Thoughts
 
-A bare cluster leaves two jobs that a managed one does for you, a default storage class and a LoadBalancer implementation. Two more are yours on any cluster: the Traefik CRDs that match the agent, and a name Windows can resolve.
+A bare cluster leaves two jobs that a managed one does for you, a default storage class and a LoadBalancer implementation. Two more are yours on any cluster: the Traefik CRDs that match the Traefik of your MES version, and a name Windows can resolve. From agent 12.0.0 an ingress controller joins that list.
 
 If the environment on a local cluster does not open, check the storage class, the Traefik CRDs, the load balancer and the name resolution, in that order.
