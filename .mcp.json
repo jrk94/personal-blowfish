@@ -1,0 +1,43 @@
+{
+  "mcpServers": {
+    "cm_api_rag": {
+      "url": "https://cm-collaborationhub.ai/protected/cmfapi/mcp",
+      "type": "http",
+      "oauth": {
+        "clientId": "CMGPT"
+      }
+    },
+    "cmgpt": {
+      "url": "https://cm-collaborationhub.ai/protected/docs/mcp",
+      "type": "http",
+      "oauth": {
+        "clientId": "CMGPT"
+      }
+    },
+    "azure-devops": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "PERSONAL_ACCESS_TOKEN",
+        "cmf-agent/ado-mcp:2.10.0",
+        "criticalmanufacturing-labs",
+        "-a",
+        "pat",
+        "-d",
+        "core",
+        "work",
+        "work-items",
+        "repositories",
+        "pipelines",
+        "test-plans",
+        "search"
+      ],
+      "env": {
+        "PERSONAL_ACCESS_TOKEN": "${ADO_MCP_PAT_B64}"
+      }
+    }
+  }
+}
